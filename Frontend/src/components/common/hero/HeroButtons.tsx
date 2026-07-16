@@ -6,7 +6,7 @@ function HeroButtons() {
 
   return (
     <div className="mt-10 flex flex-wrap justify-center gap-5">
-      <Button onClick={() => navigate("/journey")}>
+      <Button onClick={() => navigate("/portal")}>
         🚀 Start Adventure
       </Button>
 

@@ -1,4 +1,11 @@
-import { Sparkles, Code2, Brain, Trophy, BookOpen, ArrowRight } from "lucide-react";
+import {
+  Code2,
+  Brain,
+  Trophy,
+  BookOpen,
+  ArrowRight,
+} from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const journeys = [
   {
@@ -6,28 +13,34 @@ const journeys = [
     description: "Master DSA, Aptitude & Core Subjects",
     icon: Trophy,
     color: "from-yellow-500 to-orange-500",
+    route: "/dsa",
   },
   {
     title: "Full Stack Developer",
     description: "React • Node • MongoDB • Projects",
     icon: Code2,
     color: "from-blue-500 to-cyan-500",
+    route: "/fullstack",
   },
   {
     title: "AI & Machine Learning",
     description: "Deep Learning • LLMs • Python",
     icon: Brain,
     color: "from-purple-500 to-pink-500",
+    route: "/ai",
   },
   {
     title: "Core CS Subjects",
     description: "OS • DBMS • CN • OOP",
     icon: BookOpen,
     color: "from-green-500 to-emerald-500",
+    route: "/corecs",
   },
 ];
 
 function JourneySelection() {
+  const navigate = useNavigate();
+
   return (
     <div className="min-h-screen bg-slate-950 text-white px-8 py-12">
       <h1 className="text-5xl font-bold text-center">
@@ -61,7 +74,10 @@ function JourneySelection() {
                 {journey.description}
               </p>
 
-              <button className="mt-8 flex items-center gap-2 text-blue-400 hover:text-blue-300">
+              <button
+                onClick={() => navigate(journey.route)}
+                className="mt-8 flex items-center gap-2 text-blue-400 hover:text-blue-300"
+              >
                 Enter World
                 <ArrowRight size={18} />
               </button>
