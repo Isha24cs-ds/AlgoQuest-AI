@@ -1,97 +1,235 @@
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import CodeEditor from "../../components/CodeEditor";
 
-const questions = [
-  {
-    id: "ARR001",
-    title: "Largest Element in Array",
-
-    statement:
-      "Given an integer array nums, return the largest element.",
-
-    exampleInput:
-      "[2,5,8,1]",
-
-    exampleOutput:
-      "8",
-
-    constraints:
-      "1 <= n <= 100000",
-  },
-
-  {
-    id: "ARR002",
-
-    title: "Second Largest Element",
-
-    statement:
-      "Return the second largest element in the array.",
-
-    exampleInput:
-      "[2,5,8,1]",
-
-    exampleOutput:
-      "5",
-
-    constraints:
-      "1 <= n <= 100000",
-  },
-];
+interface Question {
+  id: number;
+  title: string;
+  difficulty: string;
+  statement: string;
+  example: {
+    input: string;
+    output: string;
+    explanation: string;
+  };
+  constraints: string[];
+  hints: string[];
+  starterCode: string;
+}
 
 export default function Question() {
-
   const { id } = useParams();
 
-  const question = questions.find((q) => q.id === id);
+  const [question, setQuestion] = useState<Question | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [language, setLanguage] = useState("cpp");
 
-  if (!question) return <h1>Question Not Found</h1>;
+  useEffect(() => {
+    async function fetchQuestion() {
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/v1/questions/${id}`
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch question");
+        }
+
+        const result = await response.json();
+        setQuestion(result.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchQuestion();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white text-3xl">
+        Loading...
+      </div>
+    );
+  }
+
+  if (!question) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-red-500 text-3xl">
+        Question Not Found
+      </div>
+    );
+  }
 
   return (
+    <div className="h-screen bg-slate-950 text-white">
 
-    <div className="min-h-screen bg-slate-950 text-white p-10">
+      <div className="grid grid-cols-2 h-full">
 
-      <h1 className="text-4xl font-bold">
-        {question.title}
-      </h1>
+        {/* LEFT PANEL */}
 
-      <div className="bg-slate-900 rounded-xl p-8 mt-8">
+        <div className="overflow-y-auto border-r border-slate-800 p-8">
 
-        <h2 className="text-xl font-semibold">
-          Problem Statement
-        </h2>
+          <h1 className="text-4xl font-bold">
+            {question.title}
+          </h1>
 
-        <p className="mt-4">
-          {question.statement}
-        </p>
+          <span className="inline-block mt-3 bg-green-600 px-4 py-1 rounded-full text-sm">
+            {question.difficulty}
+          </span>
 
-        <h2 className="text-xl font-semibold mt-8">
-          Example
-        </h2>
+          {/* Statement */}
 
-        <div className="bg-slate-800 p-5 rounded-lg mt-3">
+          <section className="mt-10">
 
-          <p>
-            Input :
-            {question.exampleInput}
-          </p>
+            <h2 className="text-2xl font-bold mb-4">
+              Problem Statement
+            </h2>
 
-          <p className="mt-3">
-            Output :
-            {question.exampleOutput}
-          </p>
+            <p className="text-slate-300 leading-8">
+              {question.statement}
+            </p>
+
+          </section>
+
+          {/* Example */}
+
+          <section className="mt-10">
+
+            <h2 className="text-2xl font-bold mb-4">
+              Example
+            </h2>
+
+            <div className="bg-slate-900 rounded-xl p-5 border border-slate-700">
+
+              <p>
+                <strong>Input:</strong>
+              </p>
+
+              <pre className="text-blue-400 mt-2">
+                {question.example.input}
+              </pre>
+
+              <p className="mt-5">
+                <strong>Output:</strong>
+              </p>
+
+              <pre className="text-green-400 mt-2">
+                {question.example.output}
+              </pre>
+
+              <p className="mt-5">
+                <strong>Explanation:</strong>
+              </p>
+
+              <p className="text-slate-300 mt-2">
+                {question.example.explanation}
+              </p>
+
+            </div>
+
+          </section>
+
+          {/* Constraints */}
+
+          <section className="mt-10">
+
+            <h2 className="text-2xl font-bold mb-4">
+              Constraints
+            </h2>
+
+            <ul className="list-disc ml-6 space-y-3">
+
+              {question.constraints.map((constraint, index) => (
+
+                <li key={index}>
+                  {constraint}
+                </li>
+
+              ))}
+
+            </ul>
+
+          </section>
+
+          {/* Hints */}
+
+          <section className="mt-10 mb-20">
+
+            <h2 className="text-2xl font-bold mb-4">
+              Hints
+            </h2>
+
+            <div className="space-y-4">
+
+              {question.hints.map((hint, index) => (
+
+                <div
+                  key={index}
+                  className="bg-slate-900 border border-slate-700 rounded-lg p-4"
+                >
+                  💡 {hint}
+                </div>
+
+              ))}
+
+            </div>
+
+          </section>
 
         </div>
 
-        <h2 className="text-xl font-semibold mt-8">
-          Constraints
-        </h2>
+        {/* RIGHT PANEL */}
 
-        <p className="mt-4">
-          {question.constraints}
-        </p>
+        <div className="flex flex-col h-full">
 
-        <button className="bg-blue-600 px-6 py-3 rounded-lg mt-10">
-          🤖 Ask Nova
-        </button>
+          {/* Toolbar */}
+
+          <div className="flex justify-between items-center px-6 py-4 border-b border-slate-800">
+
+            <h2 className="text-xl font-bold">
+              Code Editor
+            </h2>
+
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="bg-slate-900 border border-slate-700 rounded-lg px-4 py-2"
+            >
+              <option value="cpp">C++</option>
+              <option value="java">Java</option>
+              <option value="python">Python</option>
+            </select>
+
+          </div>
+
+          {/* Editor */}
+
+          <div className="flex-1 overflow-hidden">
+            <CodeEditor />
+          </div>
+
+          {/* Bottom Buttons */}
+
+          <div className="flex justify-end gap-4 p-5 border-t border-slate-800">
+
+            <button
+              className="bg-yellow-500 hover:bg-yellow-600 px-8 py-3 rounded-lg font-semibold transition"
+            >
+              ▶ Run
+            </button>
+
+            <button
+              className="bg-green-600 hover:bg-green-700 px-8 py-3 rounded-lg font-semibold transition"
+            >
+              ✓ Submit
+            </button>
+
+          </div>
+
+        </div>
 
       </div>
 

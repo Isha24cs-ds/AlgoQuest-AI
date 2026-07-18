@@ -1,7 +1,7 @@
-const express = require("express");
-const cors = require("cors");
+import express from "express";
+import cors from "cors";
 
-const routes = require("./routes");
+import routes from "./routes/index.js";
 
 const app = express();
 
@@ -10,4 +10,4 @@ app.use(express.json());
 
 app.use("/api/v1", routes);
 
-module.exports = app;
+export default app;

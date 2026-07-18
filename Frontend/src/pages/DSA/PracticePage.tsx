@@ -1,35 +1,59 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const questions = [
-  {
-    id: "ARR001",
-    title: "Largest Element in Array",
-    difficulty: "Easy",
-  },
-  {
-    id: "ARR002",
-    title: "Second Largest Element",
-    difficulty: "Easy",
-  },
-  {
-    id: "ARR003",
-    title: "Check if Array is Sorted",
-    difficulty: "Easy",
-  },
-  {
-    id: "ARR004",
-    title: "Reverse Array",
-    difficulty: "Easy",
-  },
-  {
-    id: "ARR005",
-    title: "Rotate Array",
-    difficulty: "Easy",
-  },
-];
+interface Question {
+  id: number;
+  title: string;
+  difficulty: string;
+}
 
 export default function PracticePage() {
   const navigate = useNavigate();
+
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    async function fetchQuestions() {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/v1/questions"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch questions");
+        }
+
+        const result = await response.json();
+
+        setQuestions(result.data);
+      } catch (err) {
+        console.error(err);
+        setError("Unable to load questions.");
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchQuestions();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white text-2xl">
+        Loading Questions...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-red-500 text-xl">
+        {error}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-slate-950 text-white p-10">
@@ -44,7 +68,7 @@ export default function PracticePage() {
 
           <div
             key={question.id}
-            className="bg-slate-900 border border-slate-700 rounded-xl p-6 flex justify-between items-center"
+            className="bg-slate-900 border border-slate-700 rounded-xl p-6 flex justify-between items-center hover:border-blue-500 transition"
           >
 
             <div>
@@ -61,7 +85,7 @@ export default function PracticePage() {
 
             <button
               onClick={() => navigate(`/question/${question.id}`)}
-              className="bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700"
+              className="bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Solve
             </button>
