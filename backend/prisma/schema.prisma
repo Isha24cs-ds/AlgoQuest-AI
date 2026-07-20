@@ -8,14 +8,29 @@ datasource db {
 }
 
 model Question {
-  id           Int      @id @default(autoincrement())
-  title        String
-  difficulty   String
-  statement    String
-  example      Json
-  constraints  Json
-  hints        Json
-  starterCode  String
-  solution     String
-  createdAt    DateTime @default(now())
+  id Int @id @default(autoincrement())
+
+  title String
+  slug  String @unique
+
+  topic      String
+  difficulty String
+
+  statement String @db.Text
+
+  example     Json
+  constraints Json
+  hints       Json
+
+  starterCode Json
+  solution    Json
+
+  tags      Json
+  companies Json
+
+  acceptance Float
+  points     Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

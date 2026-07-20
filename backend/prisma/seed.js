@@ -1,48 +1,28 @@
 import { PrismaClient } from "@prisma/client";
+import { arrayQuestions } from "../src/modules/dsa/questions/questions.data.js";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  await prisma.question.create({
-    data: {
-      title: "Largest Element in Array",
-      difficulty: "Easy",
-      statement:
-        "Given an array of integers nums, return the largest element present in the array.",
-      example: {
-        input: "nums = [2,5,1,8,3]",
-        output: "8",
-        explanation: "8 is the largest element in the array."
-      },
-      constraints: [
-        "1 <= nums.length <= 100000",
-        "-10^9 <= nums[i] <= 10^9"
-      ],
-      hints: [
-        "Traverse the array once.",
-        "Maintain the maximum element seen so far.",
-        "Update the maximum whenever you find a larger element."
-      ],
-      starterCode: `int largestElement(vector<int>& nums){
+  console.log("🌱 Seeding database...");
 
-}`,
-      solution: `int largestElement(vector<int>& nums){
-    int mx = nums[0];
+  // Clear existing questions (optional)
+  await prisma.question.deleteMany();
 
-    for(int x : nums){
-        if(x > mx) mx = x;
-    }
-
-    return mx;
-}`
-    }
+  // Insert all questions
+  await prisma.question.createMany({
+    data: arrayQuestions,
   });
 
-  console.log("✅ Question inserted successfully.");
+  console.log(`✅ Successfully inserted ${arrayQuestions.length} questions.`);
 }
 
 main()
-  .catch(console.error)
+  .catch((error) => {
+    console.error("❌ Seed failed:");
+    console.error(error);
+    process.exit(1);
+  })
   .finally(async () => {
     await prisma.$disconnect();
   });
