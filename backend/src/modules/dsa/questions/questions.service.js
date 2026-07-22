@@ -1,12 +1,11 @@
 import {
   getAllQuestions,
-  getQuestionById,
+  getQuestionBySlug,
 } from "./questions.repository.js";
 
 export async function fetchQuestions() {
   return await getAllQuestions();
 }
-
-export async function fetchQuestion(id) {
-  return await getQuestionById(id);
+export async function fetchQuestion(slug) {
+  return await getQuestionBySlug(slug);
 }

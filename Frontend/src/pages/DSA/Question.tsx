@@ -18,7 +18,7 @@ interface Question {
 }
 
 export default function Question() {
-  const { id } = useParams();
+  const { slug } = useParams();
 
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +28,7 @@ export default function Question() {
     async function fetchQuestion() {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/v1/questions/${id}`
+          `http://localhost:5000/api/v1/questions/${slug}`
         );
 
         if (!response.ok) {
@@ -45,7 +45,7 @@ export default function Question() {
     }
 
     fetchQuestion();
-  }, [id]);
+  }, [slug]);
 
   if (loading) {
     return (

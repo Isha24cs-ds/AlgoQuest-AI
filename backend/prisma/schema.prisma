@@ -7,30 +7,84 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Difficulty {
+  Easy
+  Medium
+  Hard
+}
+
+enum SubmissionStatus {
+  ACCEPTED
+  WRONG_ANSWER
+  TIME_LIMIT_EXCEEDED
+  RUNTIME_ERROR
+  COMPILATION_ERROR
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+
+  name         String
+  email        String   @unique
+  password     String
+
+  createdAt    DateTime @default(now())
+
+  submissions  Submission[]
+}
+
 model Question {
-  id Int @id @default(autoincrement())
+  id            Int      @id @default(autoincrement())
 
-  title String
-  slug  String @unique
+  title         String
+  slug          String   @unique
+  topic         String
+  difficulty    Difficulty
 
-  topic      String
-  difficulty String
+  statement     String   @db.Text
 
-  statement String @db.Text
+  example       Json
+  constraints   Json
+  hints         Json
 
-  example     Json
-  constraints Json
-  hints       Json
+  starterCode   String   @db.Text
+  solution      String   @db.Text
 
-  starterCode Json
-  solution    Json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  tags      Json
-  companies Json
+  testCases     TestCase[]
+  submissions   Submission[]
+}
 
-  acceptance Float
-  points     Int
+model TestCase {
+  id           Int      @id @default(autoincrement())
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  input        String   @db.Text
+  expected     String   @db.Text
+
+  isHidden     Boolean  @default(false)
+
+  questionId   Int
+  question     Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+}
+
+model Submission {
+  id           Int      @id @default(autoincrement())
+
+  code         String   @db.Text
+  language     String
+
+  status       SubmissionStatus
+
+  runtime      Float?
+  memory       Float?
+
+  createdAt    DateTime @default(now())
+
+  userId       Int
+  user         User @relation(fields: [userId], references: [id])
+
+  questionId   Int
+  question     Question @relation(fields: [questionId], references: [id])
 }

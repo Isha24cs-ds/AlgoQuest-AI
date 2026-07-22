@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 interface Question {
   id: number;
   title: string;
+  slug: string;
+  topic: string;
   difficulty: string;
 }
 
@@ -84,7 +86,7 @@ export default function PracticePage() {
             </div>
 
             <button
-              onClick={() => navigate(`/question/${question.id}`)}
+              onClick={() =>navigate(`/question/${question.slug}`)}
               className="bg-blue-600 px-6 py-3 rounded-lg hover:bg-blue-700 transition"
             >
               Solve

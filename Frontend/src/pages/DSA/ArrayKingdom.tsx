@@ -18,7 +18,7 @@ function ArraysKingdom() {
     {
       title: "Learn Arrays",
       icon: BookOpen,
-      route: "/learn",
+      route: "/learn-arrays",
       color: "from-blue-500 to-cyan-500",
     },
     {

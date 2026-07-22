@@ -21,7 +21,8 @@ export async function getQuestions(req, res) {
 
 export async function getQuestion(req, res) {
   try {
-    const question = await fetchQuestion(req.params.id);
+    const question = await fetchQuestion(req.params.slug);
+    
 
     if (!question) {
       return res.status(404).json({

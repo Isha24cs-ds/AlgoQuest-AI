@@ -9,6 +9,6 @@ const router = express.Router();
 
 router.get("/", getQuestions);
 
-router.get("/:id", getQuestion);
+router.get("/:slug", getQuestion);
 
 export default router;

@@ -2,18 +2,19 @@ import prisma from "../../../config/prisma.js";
 
 export async function getAllQuestions() {
   return await prisma.question.findMany({
-    select: {
-      id: true,
-      title: true,
-      difficulty: true,
-    },
+   select: {
+  id: true,
+  title: true,
+  slug: true,
+  topic: true,
+  difficulty: true,
+},
   });
 }
-
-export async function getQuestionById(id) {
+export async function getQuestionBySlug(slug) {
   return await prisma.question.findUnique({
     where: {
-      id: Number(id),
+      slug,
     },
   });
 }
