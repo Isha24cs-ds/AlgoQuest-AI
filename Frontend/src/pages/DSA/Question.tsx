@@ -19,7 +19,7 @@ interface Question {
 
 export default function Question() {
   const { slug } = useParams();
-
+console.log("slug =", slug);
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true);
   const [language, setLanguage] = useState("cpp");
