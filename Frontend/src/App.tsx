@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
+import StringsQuiz from "./pages/DSA/StringsQuiz";
 import LandingPage from "./pages/LandingPage";
 import JourneySelection from "./pages/JourneySelection";
 import WorldMap from "./pages/WorldMap";
@@ -24,7 +24,7 @@ export default function App() {
   return (
     
       <Routes>
-
+        <Route path="/strings-quiz" element={<StringsQuiz />} />
         {/* Landing */}
         <Route path="/" element={<LandingPage />} />
 

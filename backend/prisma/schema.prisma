@@ -50,6 +50,9 @@ model Question {
   starterCode   String   @db.Text
   solution      String   @db.Text
 
+  timeComplexity   String?
+  spaceComplexity  String?
+
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
