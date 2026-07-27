@@ -1,21 +1,26 @@
 import Editor from "@monaco-editor/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function CodeEditor() {
-  const [code, setCode] = useState(`#include <bits/stdc++.h>
-using namespace std;
-
-int largestElement(vector<int>& nums) {
-
+interface CodeEditorProps {
+  starterCode: string;
+  language: string;
 }
-`);
+
+export default function CodeEditor({
+  starterCode,
+  language,
+}: CodeEditorProps) {
+  const [code, setCode] = useState(starterCode);
+
+  useEffect(() => {
+    setCode(starterCode);
+  }, [starterCode]);
 
   return (
-    <div className="bg-slate-900 rounded-xl overflow-hidden border border-slate-700">
-
+    <div className="bg-slate-900 rounded-xl overflow-hidden border border-slate-700 h-full">
       <Editor
-        height="600px"
-        defaultLanguage="cpp"
+        height="100%"
+        language={language}
         theme="vs-dark"
         value={code}
         onChange={(value) => setCode(value || "")}
@@ -27,7 +32,6 @@ int largestElement(vector<int>& nums) {
           automaticLayout: true,
         }}
       />
-
     </div>
   );
 }

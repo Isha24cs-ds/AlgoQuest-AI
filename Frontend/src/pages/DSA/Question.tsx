@@ -208,7 +208,10 @@ console.log("slug =", slug);
           {/* Editor */}
 
           <div className="flex-1 overflow-hidden">
-            <CodeEditor />
+          <CodeEditor
+  starterCode={question.starterCode}
+  language={language}
+/>
           </div>
 
           {/* Bottom Buttons */}
