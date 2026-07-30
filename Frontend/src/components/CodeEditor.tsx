@@ -1,20 +1,20 @@
 import Editor from "@monaco-editor/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 interface CodeEditorProps {
-  starterCode: string;
+  code: string;
+  setCode: (code: string) => void;
   language: string;
 }
 
 export default function CodeEditor({
-  starterCode,
+  code,
+  setCode,
   language,
 }: CodeEditorProps) {
-  const [code, setCode] = useState(starterCode);
-
   useEffect(() => {
-    setCode(starterCode);
-  }, [starterCode]);
+    // nothing needed here now
+  }, []);
 
   return (
     <div className="bg-slate-900 rounded-xl overflow-hidden border border-slate-700 h-full">

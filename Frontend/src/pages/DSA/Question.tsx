@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import CodeEditor from "../../components/CodeEditor";
+import NovaAI from "../../components/NovaAI";
 
 interface Question {
   id: number;
@@ -19,10 +20,14 @@ interface Question {
 
 export default function Question() {
   const { slug } = useParams();
-console.log("slug =", slug);
+
   const [question, setQuestion] = useState<Question | null>(null);
   const [loading, setLoading] = useState(true);
+
   const [language, setLanguage] = useState("cpp");
+
+  // Monaco Editor Code
+  const [code, setCode] = useState("");
 
   useEffect(() => {
     async function fetchQuestion() {
@@ -36,7 +41,12 @@ console.log("slug =", slug);
         }
 
         const result = await response.json();
+
         setQuestion(result.data);
+
+        // Load starter code into editor
+        setCode(result.data.starterCode);
+
       } catch (err) {
         console.error(err);
       } finally {
@@ -205,13 +215,16 @@ console.log("slug =", slug);
 
           </div>
 
-          {/* Editor */}
+          {/* Monaco Editor */}
 
           <div className="flex-1 overflow-hidden">
-          <CodeEditor
-  starterCode={question.starterCode}
-  language={language}
-/>
+
+            <CodeEditor
+              code={code}
+              setCode={setCode}
+              language={language}
+            />
+
           </div>
 
           {/* Bottom Buttons */}
@@ -235,6 +248,14 @@ console.log("slug =", slug);
         </div>
 
       </div>
+
+      {/* NOVA AI */}
+
+      <NovaAI
+        question={question.statement}
+        language={language}
+        getCode={() => code}
+      />
 
     </div>
   );
