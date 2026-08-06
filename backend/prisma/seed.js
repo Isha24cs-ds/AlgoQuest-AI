@@ -1,17 +1,35 @@
 import { PrismaClient } from "@prisma/client";
 import arraysEasy from "./data/arrays/easy.js";
+import arraysMedium from "./data/arrays/medium.js";
 
 const prisma = new PrismaClient();
 
 async function main() {
   console.log("🌱 Seeding database...");
 
-  for (const q of arraysEasy) {
+  const questions = [...arraysEasy, ...arraysMedium];
+
+  for (const q of questions) {
+    console.log("Seeding:", q.title);
+
     await prisma.question.upsert({
       where: {
         slug: q.slug,
       },
-      update: {},
+
+      update: {
+        title: q.title,
+        topic: q.topic,
+        difficulty: q.difficulty,
+        statement: q.statement,
+        example: q.example,
+        constraints: q.constraints,
+        hints: q.hints,
+        starterCode: q.starterCode,
+        solution: q.solution,
+        timeComplexity: q.timeComplexity,
+        spaceComplexity: q.spaceComplexity,
+      },
 
       create: {
         title: q.title,
@@ -42,7 +60,10 @@ async function main() {
 }
 
 main()
-  .catch(console.error)
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
   .finally(async () => {
     await prisma.$disconnect();
   });
