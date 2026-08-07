@@ -4,7 +4,9 @@ import {
   Trophy,
   BookOpen,
   ArrowRight,
+  Swords,
 } from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 
 const journeys = [
@@ -38,20 +40,24 @@ const journeys = [
   },
 ];
 
-function JourneySelection() {
+export default function JourneySelection() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white px-8 py-12">
-      <h1 className="text-5xl font-bold text-center">
+    <div className="min-h-screen bg-slate-950 text-white px-6 py-16">
+
+      <h1 className="text-6xl font-bold text-center">
         Choose Your Journey
       </h1>
 
-      <p className="text-slate-400 text-center mt-4">
+      <p className="text-slate-400 text-center mt-4 text-xl">
         Every legend begins with a single choice.
       </p>
 
+      {/* Main Journey Cards */}
+
       <div className="grid md:grid-cols-2 gap-8 mt-16 max-w-6xl mx-auto">
+
         {journeys.map((journey) => {
           const Icon = journey.icon;
 
@@ -81,12 +87,91 @@ function JourneySelection() {
                 Enter World
                 <ArrowRight size={18} />
               </button>
+
             </div>
           );
         })}
+
       </div>
+
+      {/* Competitive Arena */}
+
+      <div className="max-w-6xl mx-auto mt-14">
+
+        <div className="rounded-3xl bg-gradient-to-r from-red-900/30 via-orange-900/20 to-red-900/30 border border-red-500/30 p-10">
+
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+
+            <div>
+
+              <div className="flex items-center gap-4">
+
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-r from-red-500 to-orange-500 flex items-center justify-center">
+
+                  <Swords size={34} />
+
+                </div>
+
+                <div>
+
+                  <h2 className="text-4xl font-bold">
+                    ⚔️ Competitive Arena
+                  </h2>
+
+                  <p className="text-slate-300 mt-2 text-lg">
+                    Challenge your friends in real-time coding battles.
+                  </p>
+
+                </div>
+
+              </div>
+
+              <div className="flex flex-wrap gap-3 mt-8">
+
+                <span className="bg-slate-800 px-4 py-2 rounded-full">
+                  👥 Create Room
+                </span>
+
+                <span className="bg-slate-800 px-4 py-2 rounded-full">
+                  🚪 Join Room
+                </span>
+
+                <span className="bg-slate-800 px-4 py-2 rounded-full">
+                  🏆 Live Leaderboard
+                </span>
+
+                <span className="bg-slate-800 px-4 py-2 rounded-full">
+                  ⏱️ 20 Min Battles
+                </span>
+
+              </div>
+
+            </div>
+
+            <div className="mt-8 md:mt-0">
+
+              <span className="bg-red-600 px-4 py-2 rounded-full font-semibold">
+                🔴 LIVE
+              </span>
+
+            </div>
+
+          </div>
+
+          <button
+            onClick={() => navigate("/arena")}
+            className="mt-10 bg-red-600 hover:bg-red-700 px-8 py-4 rounded-xl font-semibold flex items-center gap-2 transition"
+          >
+            Enter Arena
+
+            <ArrowRight size={20} />
+
+          </button>
+
+        </div>
+
+      </div>
+
     </div>
   );
 }
-
-export default JourneySelection;

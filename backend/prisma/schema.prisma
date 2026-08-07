@@ -31,8 +31,10 @@ model User {
   createdAt    DateTime @default(now())
 
   submissions  Submission[]
-}
 
+  arenaRooms   ArenaRoom[]
+  arenaPlayers ArenaPlayer[]
+}
 model Question {
   id            Int      @id @default(autoincrement())
 
@@ -90,4 +92,50 @@ model Submission {
 
   questionId   Int
   question     Question @relation(fields: [questionId], references: [id])
+}
+enum ArenaStatus {
+  WAITING
+  STARTED
+  FINISHED
+}
+
+model ArenaRoom {
+
+  id          Int @id @default(autoincrement())
+
+  roomCode    String @unique
+
+  topic       String
+
+  difficulty  Difficulty
+
+  duration    Int
+
+  hostId       Int
+  host         User @relation(fields: [hostId], references: [id])
+
+  status      ArenaStatus @default(WAITING)
+
+  createdAt   DateTime @default(now())
+
+  players     ArenaPlayer[]
+}
+
+model ArenaPlayer {
+
+  id          Int @id @default(autoincrement())
+
+  roomId      Int
+  room        ArenaRoom @relation(fields:[roomId],references:[id],onDelete:Cascade)
+
+  userId      Int
+  user        User @relation(fields:[userId],references:[id])
+
+  joinedAt    DateTime @default(now())
+
+  isReady     Boolean @default(false)
+
+  score       Int @default(0)
+
+  finished    Boolean @default(false)
 }

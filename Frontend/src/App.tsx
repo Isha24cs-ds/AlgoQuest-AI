@@ -4,7 +4,10 @@ import LandingPage from "./pages/LandingPage";
 import JourneySelection from "./pages/JourneySelection";
 import WorldMap from "./pages/WorldMap";
 import GamePortal from "./pages/GamePortal";
-
+import RoomSelection from "./pages/Arena/RoomSelection";
+import CreateRoom from "./pages/Arena/CreateRoom";
+import JoinRoom from "./pages/Arena/JoinRoom";
+import WaitingLobby from "./pages/Arena/WaitingLobby";
 import DSAHome from "./pages/DSA/DSAHome";
 
 // Arrays
@@ -14,7 +17,7 @@ import Lesson from "./pages/DSA/Lesson";
 import PracticePage from "./pages/DSA/PracticePage";
 import Question from "./pages/DSA/Question";
 import Quiz from "./pages/DSA/Quiz";
-
+import ArenaHome from "./pages/Arena/ArenaHome";
 // Strings
 import StringsKingdom from "./pages/DSA/StringsKingdom";
 import LearnStrings from "./pages/DSA/LearnStrings";
@@ -24,6 +27,14 @@ export default function App() {
   return (
     
       <Routes>
+        <Route path="/arena/room" element={<RoomSelection/>}/>
+
+<Route path="/arena/create" element={<CreateRoom/>}/>
+
+<Route path="/arena/join" element={<JoinRoom/>}/>
+
+<Route path="/arena/lobby" element={<WaitingLobby/>}/>
+<Route path="/arena" element={<ArenaHome />}/>
         <Route path="/strings-quiz" element={<StringsQuiz />} />
         {/* Landing */}
         <Route path="/" element={<LandingPage />} />
