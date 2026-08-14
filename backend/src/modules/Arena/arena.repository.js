@@ -13,4 +13,17 @@ export async function findArenaRoom(roomCode) {
     },
   });
 }
+export async function getRoomWithPlayers(roomCode) {
+  return await prisma.arenaRoom.findUnique({
+    where: { roomCode },
+    include: {
+      players: {
+        include: {
+          user: true,
+        },
+      },
+      host: true,
+    },
+  });
+}
         
