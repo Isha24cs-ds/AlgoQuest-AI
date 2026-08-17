@@ -15,14 +15,29 @@ export async function findArenaRoom(roomCode) {
 }
 export async function getRoomWithPlayers(roomCode) {
   return await prisma.arenaRoom.findUnique({
-    where: { roomCode },
+    where: {
+      roomCode,
+    },
     include: {
       players: {
         include: {
-          user: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
         },
       },
-      host: true,
+    },
+  });
+}
+export async function addPlayerToRoom(roomId, userId) {
+  return await prisma.arenaPlayer.create({
+    data: {
+      roomId,
+      userId,
     },
   });
 }

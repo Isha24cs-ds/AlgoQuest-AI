@@ -1,30 +1,55 @@
+import { useNavigate, useParams } from "react-router-dom";
+import { Copy, ArrowLeft } from "lucide-react";
 import { useState } from "react";
-import { Copy } from "lucide-react";
+
+const battleNames: Record<string, string> = {
+  dsa: "DSA Battle",
+  development: "Development Battle",
+  aiml: "AI / ML Battle",
+  core: "Core CS Battle",
+};
 
 export default function CreateRoom() {
+  const navigate = useNavigate();
+  const { battleType } = useParams();
+
   const [roomCode, setRoomCode] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function createRoom() {
-    setLoading(true);
+  const battleName =
+    battleNames[battleType || ""] || "Arena Battle";
 
+  async function createRoom() {
     try {
+      setLoading(true);
+
       const response = await fetch(
         "http://localhost:5000/api/v1/arena/create",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            battleType,
+          }),
         }
       );
 
       const data = await response.json();
 
-      setRoomCode(data.room.roomCode);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to create room");
-    }
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to create room");
+      }
 
-    setLoading(false);
+      setRoomCode(data.room.roomCode);
+
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create room");
+    } finally {
+      setLoading(false);
+    }
   }
 
   function copyCode() {
@@ -33,56 +58,77 @@ export default function CreateRoom() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 flex items-center justify-center text-white">
+    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6">
 
-      <div className="bg-slate-900 rounded-3xl p-10 w-[600px] border border-slate-800">
+      <div className="w-full max-w-2xl">
 
-        <h1 className="text-4xl font-bold">
-          Create Arena Room
-        </h1>
+        <button
+          onClick={() => navigate(`/arena/room/${battleType}`)}
+          className="flex items-center gap-2 text-slate-400 hover:text-white mb-8"
+        >
+          <ArrowLeft size={20} />
+          Back
+        </button>
 
-        <p className="text-slate-400 mt-3">
-          Generate a room and invite your friends.
-        </p>
+        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-10">
 
-        {!roomCode ? (
+          <p className="text-red-400 font-semibold">
+            {battleName}
+          </p>
 
-          <button
-            onClick={createRoom}
-            disabled={loading}
-            className="mt-10 w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-xl text-xl font-semibold transition disabled:opacity-50"
-          >
-            {loading ? "Creating..." : "Generate Room Code"}
-          </button>
+          <h1 className="text-4xl font-bold mt-3">
+            Create Arena Room
+          </h1>
 
-        ) : (
+          <p className="text-slate-400 mt-3">
+            Create a room and invite your friends to compete.
+          </p>
 
-          <div className="mt-10">
+          {!roomCode ? (
+            <button
+              onClick={createRoom}
+              disabled={loading}
+              className="w-full mt-10 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 py-4 rounded-xl text-lg font-semibold transition"
+            >
+              {loading ? "Creating Room..." : "Generate Room Code"}
+            </button>
+          ) : (
+            <>
+              <div className="mt-10">
 
-            <div className="bg-slate-800 rounded-xl p-8 flex justify-between items-center border border-slate-700">
+                <p className="text-slate-400 mb-3">
+                  Share this code with your friends
+                </p>
 
-              <span className="text-5xl tracking-widest font-bold">
-                {roomCode}
-              </span>
+                <div className="bg-slate-800 border border-slate-700 rounded-2xl p-7 flex items-center justify-between">
+
+                  <span className="text-4xl font-bold tracking-[0.4em]">
+                    {roomCode}
+                  </span>
+
+                  <button
+                    onClick={copyCode}
+                    className="p-3 rounded-lg bg-slate-700 hover:bg-slate-600"
+                  >
+                    <Copy size={22} />
+                  </button>
+
+                </div>
+
+              </div>
 
               <button
-                onClick={copyCode}
-                className="hover:text-blue-400 transition"
+                onClick={() =>
+                  navigate(`/arena/lobby/${roomCode}`)
+                }
+                className="w-full mt-8 bg-green-600 hover:bg-green-700 py-4 rounded-xl text-lg font-semibold transition"
               >
-                <Copy size={30} />
+                Enter Waiting Lobby →
               </button>
+            </>
+          )}
 
-            </div>
-
-            <button
-              className="mt-8 w-full bg-green-600 hover:bg-green-700 py-4 rounded-xl text-xl font-semibold transition"
-            >
-              Continue →
-            </button>
-
-          </div>
-
-        )}
+        </div>
 
       </div>
 

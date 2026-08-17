@@ -1,6 +1,8 @@
 import {
   createArenaRoom,
   findArenaRoom,
+  addPlayerToRoom,
+  getRoomWithPlayers,
 } from "./arena.repository.js";
 
 function generateRoomCode() {
@@ -17,14 +19,25 @@ function generateRoomCode() {
   return roomCode;
 }
 
-export async function generateRoom() {
+export async function generateRoom(battleType = "dsa") {
+  const battleTopics = {
+    dsa: "DSA",
+    development: "Development",
+    aiml: "AI/ML",
+    core: "Core CS",
+  };
+
+  const topic = battleTopics[battleType] || "DSA";
+
   const room = await createArenaRoom({
     roomCode: generateRoomCode(),
-    topic: "Arrays",
+
+    topic: topic,
+
     difficulty: "Easy",
+
     duration: 20,
 
-    // Temporary values
     hostId: 1,
   });
 
@@ -32,6 +45,20 @@ export async function generateRoom() {
 }
 export async function joinRoom(roomCode) {
   const room = await findArenaRoom(roomCode);
+
+  if (!room) {
+    throw new Error("Room not found");
+  }
+
+  // Temporary test user id
+  const userId = 1;
+
+  await addPlayerToRoom(room.id, userId);
+
+  return room;
+}
+export async function getLobby(roomCode) {
+  const room = await getRoomWithPlayers(roomCode);
 
   if (!room) {
     throw new Error("Room not found");
