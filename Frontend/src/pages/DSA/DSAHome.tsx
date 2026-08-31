@@ -6,17 +6,17 @@ import { Sparkles, Search, Filter } from "lucide-react";
 
 const worlds = [
   {
-    title: "Variables & Data Types",
+    title: "Programming Fundamentals",
     icon: "📦",
     unlocked: true,
     current: false,
     difficulty: "Easy",
-    problemCount: 12,
+    problemCount: 39,
     route: "/variables",
   },
   {
-    title: "Arrays Kingdom",
-    icon: "🏰",
+    title: "Arrays",
+    icon: "📊",
     unlocked: true,
     current: true,
     difficulty: "Easy",
@@ -24,8 +24,8 @@ const worlds = [
     route: "/arrays",
   },
   {
-    title: "Strings Forest",
-    icon: "🌲",
+    title: "Strings",
+    icon: "🔤",
     unlocked: true,
     current: false,
     difficulty: "Easy",
@@ -33,8 +33,8 @@ const worlds = [
     route: "/strings",
   },
   {
-    title: "Linked List River",
-    icon: "🌊",
+    title: "Linked Lists",
+    icon: "🔗",
     unlocked: true,
     current: false,
     difficulty: "Medium",
@@ -42,8 +42,8 @@ const worlds = [
     route: "/linkedlist",
   },
   {
-    title: "Stack Volcano",
-    icon: "🌋",
+    title: "Stacks",
+    icon: "📚",
     unlocked: true,
     current: false,
     difficulty: "Medium",
@@ -51,8 +51,8 @@ const worlds = [
     route: "/stack",
   },
   {
-    title: "Queue City",
-    icon: "🏙️",
+    title: "Queues",
+    icon: "⏳",
     unlocked: true,
     current: false,
     difficulty: "Medium",
@@ -60,8 +60,8 @@ const worlds = [
     route: "/queue",
   },
   {
-    title: "Tree Temple",
-    icon: "🌳",
+    title: "Trees",
+    icon: "🌿",
     unlocked: false,
     current: false,
     difficulty: "Hard",
@@ -69,8 +69,8 @@ const worlds = [
     route: "/tree",
   },
   {
-    title: "Graph Galaxy",
-    icon: "🌌",
+    title: "Graphs",
+    icon: "🌐",
     unlocked: false,
     current: false,
     difficulty: "Hard",

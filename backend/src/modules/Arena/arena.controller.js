@@ -6,9 +6,9 @@ import {
 
 export async function createRoom(req, res) {
   try {
-    const { battleType } = req.body;
+    const { battleType, userName, userEmail } = req.body;
 
-const room = await generateRoom(battleType);
+    const room = await generateRoom(battleType, userName, userEmail);
 
     res.status(200).json({
       success: true,
@@ -22,11 +22,12 @@ const room = await generateRoom(battleType);
     });
   }
 }
+
 export async function joinArenaRoom(req, res) {
   try {
-    const { roomCode } = req.body;
+    const { roomCode, userName, userEmail } = req.body;
 
-    const room = await joinRoom(roomCode);
+    const room = await joinRoom(roomCode, userName, userEmail);
 
     res.status(200).json({
       success: true,
@@ -40,6 +41,7 @@ export async function joinArenaRoom(req, res) {
     });
   }
 }
+
 export async function getLobbyDetails(req, res) {
   try {
     const { code } = req.params;
@@ -58,6 +60,7 @@ export async function getLobbyDetails(req, res) {
     });
   }
 }
+
 export async function getArenaLobby(req, res) {
   try {
     const { roomCode } = req.params;

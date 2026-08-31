@@ -25,6 +25,11 @@ export default function CreateRoom() {
     try {
       setLoading(true);
 
+      const storedUser = localStorage.getItem("questai_user");
+      const user = storedUser ? JSON.parse(storedUser) : null;
+      const userName = user?.name || "Logged-in Player";
+      const userEmail = user?.email || "user@questai.io";
+
       const response = await fetch(
         "http://localhost:5000/api/v1/arena/create",
         {
@@ -34,6 +39,8 @@ export default function CreateRoom() {
           },
           body: JSON.stringify({
             battleType,
+            userName,
+            userEmail,
           }),
         }
       );

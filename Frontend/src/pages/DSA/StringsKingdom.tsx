@@ -68,7 +68,7 @@ export default function StringsKingdom() {
                 <span>Track 03 • Data Structures</span>
               </div>
               <h1 className="font-heading text-3xl font-extrabold text-slate-900 sm:text-4xl">
-                Strings Forest
+                Strings Track
               </h1>
               <p className="text-slate-600 text-sm mt-1 font-medium">
                 Master text processing, pattern matching, substring search algorithms, and character arrays.
@@ -106,7 +106,7 @@ export default function StringsKingdom() {
               Nova AI Mentor
             </h2>
             <p className="text-xs leading-relaxed text-slate-700 mt-1 font-medium">
-              Welcome to the Strings Forest! Here you'll learn how search engines, chat apps, and AI assistants manipulate text. Ask Nova for real-time hints anytime!
+              Welcome to the Strings Track! Here you'll learn how search engines, chat apps, and AI assistants manipulate text. Ask Nova for real-time hints anytime!
             </p>
           </div>
         </div>

@@ -69,7 +69,7 @@ function ArraysKingdom() {
                 <span>Track 02 • Data Structures</span>
               </div>
               <h1 className="font-heading text-3xl font-extrabold text-slate-900 sm:text-4xl">
-                Arrays Kingdom
+                Arrays Track
               </h1>
               <p className="text-slate-600 text-sm mt-1 font-medium">
                 Master contiguous memory, sliding window, two-pointer techniques, and prefix sums.

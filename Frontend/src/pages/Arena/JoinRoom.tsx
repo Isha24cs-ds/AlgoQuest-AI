@@ -30,6 +30,11 @@ export default function JoinRoom() {
     try {
       setLoading(true);
 
+      const storedUser = localStorage.getItem("questai_user");
+      const user = storedUser ? JSON.parse(storedUser) : null;
+      const userName = user?.name || "Joining Player";
+      const userEmail = user?.email || "joining_user@questai.io";
+
       const response = await fetch(
         "http://localhost:5000/api/v1/arena/join",
         {
@@ -39,6 +44,8 @@ export default function JoinRoom() {
           },
           body: JSON.stringify({
             roomCode: roomCode.trim().toUpperCase(),
+            userName,
+            userEmail,
           }),
         }
       );

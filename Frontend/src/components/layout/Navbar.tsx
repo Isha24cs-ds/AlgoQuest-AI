@@ -47,17 +47,20 @@ function Navbar() {
         </nav>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-3">
-          <button className="hidden sm:inline-flex text-xs font-semibold text-slate-600 hover:text-slate-900 px-3 py-2 transition">
-            Sign In
-          </button>
+        <div className="flex items-center gap-2">
+          <a
+            href="/login"
+            className="inline-flex text-xs font-bold text-slate-700 hover:text-slate-900 px-3.5 py-2 rounded-lg border border-slate-200 bg-white hover:bg-slate-50 transition"
+          >
+            Log In
+          </a>
 
           <a
-            href="/portal"
+            href="/signup"
             className="inline-flex items-center gap-1.5 rounded-xl bg-amber-500 hover:bg-amber-600 px-4 py-2 text-xs font-bold text-slate-950 shadow-xs border border-amber-400/60 transition-all duration-200"
           >
             <Sparkles size={14} className="stroke-[2.5]" />
-            <span>Launch Platform</span>
+            <span>Sign Up</span>
           </a>
         </div>
 

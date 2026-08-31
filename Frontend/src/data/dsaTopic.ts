@@ -1,75 +1,66 @@
 export const dsaTopics = [
-
-{
-id:1,
-title:"Variables Village",
-icon:"🏡",
-difficulty:"Easy",
-locked:false,
-xp:100
-},
-
-{
-id:2,
-title:"Arrays Kingdom",
-icon:"🏰",
-difficulty:"Easy",
-locked:false,
-xp:200
-},
-
-{
-id:3,
-title:"String Forest",
-icon:"🌲",
-difficulty:"Easy",
-locked:false,
-xp:300
-},
-
-{
-id:4,
-title:"Linked List River",
-icon:"🌊",
-difficulty:"Medium",
-locked:true,
-xp:400
-},
-
-{
-id:5,
-title:"Stack Volcano",
-icon:"🌋",
-difficulty:"Medium",
-locked:true,
-xp:500
-},
-
-{
-id:6,
-title:"Queue City",
-icon:"🏙",
-difficulty:"Medium",
-locked:true,
-xp:600
-},
-
-{
-id:7,
-title:"Tree Temple",
-icon:"🌳",
-difficulty:"Hard",
-locked:true,
-xp:800
-},
-
-{
-id:8,
-title:"Graph Galaxy",
-icon:"🌌",
-difficulty:"Hard",
-locked:true,
-xp:1000
-}
-
-];
+  {
+    id: 1,
+    title: "Programming Fundamentals",
+    icon: "📦",
+    difficulty: "Easy",
+    locked: false,
+    xp: 100,
+  },
+  {
+    id: 2,
+    title: "Arrays",
+    icon: "📊",
+    difficulty: "Easy",
+    locked: false,
+    xp: 200,
+  },
+  {
+    id: 3,
+    title: "Strings",
+    icon: "🔤",
+    difficulty: "Easy",
+    locked: false,
+    xp: 300,
+  },
+  {
+    id: 4,
+    title: "Linked Lists",
+    icon: "🔗",
+    difficulty: "Medium",
+    locked: true,
+    xp: 400,
+  },
+  {
+    id: 5,
+    title: "Stacks",
+    icon: "📚",
+    difficulty: "Medium",
+    locked: true,
+    xp: 500,
+  },
+  {
+    id: 6,
+    title: "Queues",
+    icon: "⏳",
+    difficulty: "Medium",
+    locked: true,
+    xp: 600,
+  },
+  {
+    id: 7,
+    title: "Trees",
+    icon: "🌿",
+    difficulty: "Hard",
+    locked: true,
+    xp: 800,
+  },
+  {
+    id: 8,
+    title: "Graphs",
+    icon: "🌐",
+    difficulty: "Hard",
+    locked: true,
+    xp: 1000,
+  },
+];

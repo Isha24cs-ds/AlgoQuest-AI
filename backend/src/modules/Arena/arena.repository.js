@@ -34,10 +34,28 @@ export async function getRoomWithPlayers(roomCode) {
   });
 }
 export async function addPlayerToRoom(roomId, userId) {
+  // Prevent duplicate player insertion
+  const existing = await prisma.arenaPlayer.findFirst({
+    where: { roomId, userId },
+  });
+  if (existing) return existing;
+
   return await prisma.arenaPlayer.create({
     data: {
       roomId,
       userId,
+    },
+  });
+}
+
+export async function upsertUser(name, email) {
+  return await prisma.user.upsert({
+    where: { email },
+    update: { name },
+    create: {
+      name,
+      email,
+      password: "hashed_password_123",
     },
   });
 }

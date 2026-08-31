@@ -3,6 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import CodeEditor from "../../components/CodeEditor";
 import NovaAI from "../../components/NovaAI";
 import { ArrowLeft, Play, CheckCircle2, Lightbulb, Loader2 } from "lucide-react";
+import { practiceQuestions } from "../../data/practiceQuestions";
+import { linkedListPracticeQuestions } from "../../data/linkedListPracticeQuestions";
+import { queuePracticeQuestions } from "../../data/queuePracticeQuestions";
+import { stackPracticeQuestions } from "../../data/stackPracticeQuestions";
+import { stringsPracticeQuestions } from "../../data/stringsPracticeQuestions";
+import { variablesPracticeQuestions } from "../../data/variablesPracticeQuestions";
 
 interface Question {
   id: number;
@@ -19,7 +25,17 @@ interface Question {
   starterCode: string;
 }
 
-export default function Question() {
+function cleanStarterCode(code: string): string {
+  if (!code) return code;
+  return code.replace(
+    /(class\s+Solution\s*\{[\s\S]*?public:\s*\n?\s*)([A-Za-z0-9_<>*&\s]+?\s+[A-Za-z0-9_]+\s*\([^)]*\)\s*\{)([\s\S]*?)(\n\s*\}\s*\n?\s*\};)/g,
+    (_, prefix, funcSig, _body, suffix) => {
+      return `${prefix}${funcSig}\n        // Write your solution here\n        ${suffix.trim()}`;
+    }
+  );
+}
+
+export default function QuestionPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
 
@@ -31,19 +47,35 @@ export default function Question() {
   useEffect(() => {
     async function fetchQuestion() {
       try {
+        setLoading(true);
         const response = await fetch(
           `http://localhost:5000/api/v1/questions/${slug}`
         );
 
         if (!response.ok) {
-          throw new Error("Failed to fetch question");
+          throw new Error("Failed to fetch question from API");
         }
 
         const result = await response.json();
         setQuestion(result.data);
-        setCode(result.data.starterCode);
+        setCode(cleanStarterCode(result.data.starterCode));
       } catch (err) {
-        console.error(err);
+        // Fallback to static practice datasets
+        const allLocalQuestions = [
+          ...practiceQuestions,
+          ...linkedListPracticeQuestions,
+          ...queuePracticeQuestions,
+          ...stackPracticeQuestions,
+          ...stringsPracticeQuestions,
+          ...variablesPracticeQuestions,
+        ];
+        const localMatch = allLocalQuestions.find((q: any) => q.slug === slug);
+        if (localMatch) {
+          setQuestion(localMatch);
+          setCode(cleanStarterCode(localMatch.starterCode));
+        } else {
+          console.error("Question not found in API or local dataset:", err);
+        }
       } finally {
         setLoading(false);
       }
