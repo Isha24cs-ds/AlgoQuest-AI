@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Copy, ArrowLeft, Loader2, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 
@@ -39,9 +40,10 @@ export default function CreateRoom() {
         }
 
         const response = await fetch(
-          "http://localhost:5000/api/v1/arena/create",
+          `${API_BASE_URL}/arena/create`,
           {
             method: "POST",
+
             headers,
             body: JSON.stringify({
               battleType,

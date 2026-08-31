@@ -1,6 +1,8 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../config";
+
 import {
   Bot,
   Sparkles,
@@ -46,9 +48,11 @@ export default function NovaAI({
         }
 
         const response = await fetch(
-          "http://localhost:5000/api/v1/ai/chat",
+          `${API_BASE_URL}/ai/chat`,
           {
             method: "POST",
+
+
             headers,
             body: JSON.stringify({
               question,

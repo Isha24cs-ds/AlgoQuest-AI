@@ -2,7 +2,9 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
+import { API_BASE_URL } from "../../config";
 import { Users, Swords, CheckCircle2, Copy, Shield, ArrowLeft, Loader2 } from "lucide-react";
+
 
 interface DatabasePlayer {
   id: number;
@@ -34,8 +36,10 @@ export default function WaitingLobby() {
     async function fetchLobbyFromDatabase() {
       try {
         const response = await fetch(
-          `http://localhost:5000/api/v1/arena/lobby/${roomCode}`
+          `${API_BASE_URL}/arena/lobby/${roomCode}`
         );
+
+
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.room) {

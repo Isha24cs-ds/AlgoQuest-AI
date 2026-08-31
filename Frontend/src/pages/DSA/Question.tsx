@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config";
 import CodeEditor from "../../components/CodeEditor";
 
 import NovaAI from "../../components/NovaAI";
+
 import { ArrowLeft, Play, CheckCircle2, Lightbulb, Loader2 } from "lucide-react";
 import { practiceQuestions } from "../../data/practiceQuestions";
 import { linkedListPracticeQuestions } from "../../data/linkedListPracticeQuestions";
@@ -93,9 +95,11 @@ export default function QuestionPage() {
         const timeTakenSeconds = simulatedTimeTaken > 0 ? simulatedTimeTaken : calculatedTime;
 
         /* DEV_SIMULATION: Submits simulation result to DB backend (POST /api/v1/submissions) to trigger real adaptive engine pipeline */
-        const response = await fetch("http://localhost:5000/api/v1/submissions", {
+        const response = await fetch(`${API_BASE_URL}/submissions`, {
           method: "POST",
           headers,
+
+
           body: JSON.stringify({
             questionId: question.id || 1,
             code,
@@ -142,8 +146,10 @@ export default function QuestionPage() {
       try {
         setLoading(true);
         const response = await fetch(
-          `http://localhost:5000/api/v1/questions/${slug}`
+          `${API_BASE_URL}/questions/${slug}`
         );
+
+
 
         if (!response.ok) {
           throw new Error("Failed to fetch question from API");

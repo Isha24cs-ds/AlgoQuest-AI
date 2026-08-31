@@ -1,5 +1,7 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import { API_BASE_URL } from "../config";
+
 
 
 export interface User {
@@ -49,9 +51,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         // Verify token with backend GET /me
         try {
-          const res = await fetch("http://localhost:5000/api/v1/auth/me", {
+          const res = await fetch(`${API_BASE_URL}/auth/me`, {
             headers: { Authorization: `Bearer ${storedToken}` },
           });
+
+
           const data = await res.json();
           if (res.ok && data.success && data.user) {
             setUser(data.user);

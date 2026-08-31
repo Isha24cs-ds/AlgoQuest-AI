@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { API_BASE_URL } from "../config";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { Sparkles, Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
@@ -39,8 +40,10 @@ export default function AuthPage() {
     try {
       setLoading(true);
       const endpoint = isSignUp
-        ? "http://localhost:5000/api/v1/auth/signup"
-        : "http://localhost:5000/api/v1/auth/login";
+        ? `${API_BASE_URL}/auth/signup`
+        : `${API_BASE_URL}/auth/login`;
+
+
 
       const payload = isSignUp
         ? { name: name.trim(), email: email.trim(), password }

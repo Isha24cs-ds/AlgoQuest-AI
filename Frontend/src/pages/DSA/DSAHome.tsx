@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config";
 import WorldNode from "../../components/dsa/WorldNode";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 import { Sparkles, Search, Filter, Target, BrainCircuit, ArrowRight, Activity, Award, Lock } from "lucide-react";
+
 
 
 const worlds = [
@@ -135,10 +137,12 @@ function DSAHome() {
 
 
         const [progRes, masteryRes, recRes] = await Promise.all([
-          fetch("http://localhost:5000/api/v1/progress", { headers }),
-          fetch("http://localhost:5000/api/v1/adaptive/mastery", { headers }),
-          fetch("http://localhost:5000/api/v1/adaptive/next-question", { headers }),
+          fetch(`${API_BASE_URL}/progress`, { headers }),
+          fetch(`${API_BASE_URL}/adaptive/mastery`, { headers }),
+          fetch(`${API_BASE_URL}/adaptive/next-question`, { headers }),
         ]);
+
+
 
         if (progRes.ok) {
           const pData = await progRes.json();

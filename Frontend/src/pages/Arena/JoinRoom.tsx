@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { ArrowLeft, LogIn, Loader2 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../config";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 
@@ -44,9 +45,10 @@ export default function JoinRoom() {
         }
 
         const response = await fetch(
-          "http://localhost:5000/api/v1/arena/join",
+          `${API_BASE_URL}/arena/join`,
           {
             method: "POST",
+
             headers,
             body: JSON.stringify({
               roomCode: roomCode.trim().toUpperCase(),
