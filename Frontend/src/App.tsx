@@ -41,71 +41,77 @@ import LearnQueue from "./pages/DSA/LearnQueue";
 import QueueLesson from "./pages/DSA/QueueLesson";
 import QueuePracticePage from "./pages/DSA/QueuePracticePage";
 
-// Auth Page
 import AuthPage from "./pages/AuthPage";
+import { AuthProvider } from "./context/AuthContext";
+import AuthModal from "./components/auth/AuthModal";
+import ProtectedRoute from "./components/auth/ProtectedRoute";
 
 export default function App() {
   return (
+    <AuthProvider>
+      <AuthModal />
       <Routes>
         {/* Landing */}
         <Route path="/" element={<LandingPage />} />
         {/* Auth */}
         <Route path="/login" element={<AuthPage />} />
         <Route path="/signup" element={<AuthPage />} />
-        {/* Journey Selection */}
+
+        {/* Journey & Map (Protected) */}
         <Route path="/journey" element={<JourneySelection />} />
-        {/* World Map */}
-        <Route path="/world-map" element={<WorldMap />} />
-        {/* Game Portal */}
-        <Route path="/portal" element={<GamePortal />} />
+        <Route path="/world-map" element={<ProtectedRoute><WorldMap /></ProtectedRoute>} />
+
+        <Route path="/portal" element={<ProtectedRoute><GamePortal /></ProtectedRoute>} />
+
         {/* ===================== ARENA ===================== */}
         <Route path="/arena" element={<ArenaHome />} />
-        <Route
-  path="/arena/room/:battleType"
-  element={<RoomSelection />}
-/>
+        <Route path="/arena/room/:battleType" element={<RoomSelection />} />
+        <Route path="/arena/create/:battleType" element={<ProtectedRoute><CreateRoom /></ProtectedRoute>} />
+        <Route path="/arena/join/:battleType" element={<ProtectedRoute><JoinRoom /></ProtectedRoute>} />
+        <Route path="/arena/lobby" element={<ProtectedRoute><WaitingLobby /></ProtectedRoute>} />
+        <Route path="/arena/lobby/:roomCode" element={<ProtectedRoute><WaitingLobby /></ProtectedRoute>} />
 
-<Route
-  path="/arena/create/:battleType"
-  element={<CreateRoom />}
-/>
-
-<Route path="/arena/join/:battleType" element={<JoinRoom />}/>
-        <Route path="/arena/lobby" element={<WaitingLobby />} />
-        <Route path="/arena/lobby/:roomCode" element={<WaitingLobby />} />
         {/* ===================== DSA ===================== */}
         <Route path="/dsa" element={<DSAHome />} />
         {/* Variables & Math */}
         <Route path="/variables" element={<VariablesPracticePage />} />
-        <Route path="/variables-practice" element={<VariablesPracticePage />} />
+        <Route path="/variables-practice" element={<ProtectedRoute><VariablesPracticePage /></ProtectedRoute>} />
+
         {/* Arrays */}
         <Route path="/arrays" element={<ArrayKingdom />} />
         <Route path="/learn-arrays" element={<LearnPage />} />
         <Route path="/learn-arrays/:id" element={<Lesson />} />
-        <Route path="/practice" element={<PracticePage />} />
-        <Route path="/question/:slug" element={<Question />} />
+        <Route path="/practice" element={<ProtectedRoute><PracticePage /></ProtectedRoute>} />
+        <Route path="/question/:slug" element={<ProtectedRoute><Question /></ProtectedRoute>} />
         <Route path="/quiz" element={<Quiz />} />
+
         {/* ===================== STRINGS ===================== */}
         <Route path="/strings" element={<StringsKingdom />} />
         <Route path="/learn-strings" element={<LearnStrings />} />
         <Route path="/learn-strings/:id" element={<StringLesson />} />
         <Route path="/strings-quiz" element={<StringsQuiz />} />
-        <Route path="/strings-practice" element={<StringsPracticePage />} />
+        <Route path="/strings-practice" element={<ProtectedRoute><StringsPracticePage /></ProtectedRoute>} />
+
         {/* ===================== LINKED LISTS ===================== */}
         <Route path="/linkedlist" element={<LinkedListTrack />} />
         <Route path="/learn-linkedlist" element={<LearnLinkedList />} />
         <Route path="/learn-linkedlist/:id" element={<LinkedListLesson />} />
-        <Route path="/linkedlist-practice" element={<LinkedListPracticePage />} />
+        <Route path="/linkedlist-practice" element={<ProtectedRoute><LinkedListPracticePage /></ProtectedRoute>} />
+
         {/* ===================== STACK ===================== */}
         <Route path="/stack" element={<StackTrack />} />
         <Route path="/learn-stack" element={<LearnStack />} />
         <Route path="/learn-stack/:id" element={<StackLesson />} />
-        <Route path="/stack-practice" element={<StackPracticePage />} />
+        <Route path="/stack-practice" element={<ProtectedRoute><StackPracticePage /></ProtectedRoute>} />
+
         {/* ===================== QUEUE ===================== */}
         <Route path="/queue" element={<QueueTrack />} />
         <Route path="/learn-queue" element={<LearnQueue />} />
         <Route path="/learn-queue/:id" element={<QueueLesson />} />
-        <Route path="/queue-practice" element={<QueuePracticePage />} />
+        <Route path="/queue-practice" element={<ProtectedRoute><QueuePracticePage /></ProtectedRoute>} />
       </Routes>
+    </AuthProvider>
   );
 }
+
+

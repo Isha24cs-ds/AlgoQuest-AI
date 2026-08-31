@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { useAuth } from "../context/AuthContext";
 import {
   Bot,
   Sparkles,
@@ -24,6 +25,7 @@ export default function NovaAI({
   language,
   getCode,
 }: Props) {
+  const { requireAuth, token } = useAuth();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -32,39 +34,47 @@ export default function NovaAI({
   async function askNova(prompt: string) {
     if (!prompt.trim()) return;
 
-    setLoading(true);
+    requireAuth(async () => {
+      setLoading(true);
 
-    try {
-      const response = await fetch(
-        "http://localhost:5000/api/v1/ai/chat",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            question,
-            language,
-            code: getCode(),
-            userMessage: prompt,
-          }),
+      try {
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
         }
-      );
 
-      const data = await response.json();
+        const response = await fetch(
+          "http://localhost:5000/api/v1/ai/chat",
+          {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              question,
+              language,
+              code: getCode(),
+              userMessage: prompt,
+            }),
+          }
+        );
 
-      if (!response.ok) {
-        setAnswer(data.message || "Something went wrong.");
-      } else {
-        setAnswer(data.answer);
+        const data = await response.json();
+
+        if (!response.ok) {
+          setAnswer(data.message || "Something went wrong.");
+        } else {
+          setAnswer(data.answer);
+        }
+      } catch (err) {
+        console.error(err);
+        setAnswer("Unable to connect to Nova AI mentor.");
       }
-    } catch (err) {
-      console.error(err);
-      setAnswer("Unable to connect to Nova AI mentor.");
-    }
 
-    setLoading(false);
+      setLoading(false);
+    });
   }
+
 
   return (
     <>

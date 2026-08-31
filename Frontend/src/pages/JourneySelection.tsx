@@ -10,11 +10,13 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 
 export default function JourneySelection() {
   const navigate = useNavigate();
+  const { requireAuth } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col justify-between">
@@ -81,7 +83,7 @@ export default function JourneySelection() {
 
             <div className="shrink-0 flex flex-col justify-center">
               <button
-                onClick={() => navigate("/dsa")}
+                onClick={() => requireAuth(() => navigate("/dsa"))}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-amber-500 hover:bg-amber-600 px-8 py-4 text-sm font-bold text-slate-950 shadow-xs border border-amber-400 transition-all group-hover:shadow-md"
               >
                 <span>Enter Placement Track</span>
@@ -137,7 +139,7 @@ export default function JourneySelection() {
 
             <div className="flex-shrink-0">
               <button
-                onClick={() => navigate("/arena")}
+                onClick={() => requireAuth(() => navigate("/arena"))}
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 px-6 py-3.5 text-sm font-bold text-white shadow-xs transition-all"
               >
                 <span>Enter Arena</span>
@@ -146,6 +148,7 @@ export default function JourneySelection() {
             </div>
           </div>
         </div>
+
       </main>
 
       <Footer />

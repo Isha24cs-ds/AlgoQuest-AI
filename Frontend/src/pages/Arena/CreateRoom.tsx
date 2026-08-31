@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Copy, ArrowLeft, Loader2, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 
@@ -14,6 +15,7 @@ const battleNames: Record<string, string> = {
 export default function CreateRoom() {
   const navigate = useNavigate();
   const { battleType } = useParams();
+  const { requireAuth, token, user } = useAuth();
 
   const [roomCode, setRoomCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -22,43 +24,47 @@ export default function CreateRoom() {
     battleNames[battleType || ""] || "Arena Battle";
 
   async function createRoom() {
-    try {
-      setLoading(true);
+    requireAuth(async () => {
+      try {
+        setLoading(true);
 
-      const storedUser = localStorage.getItem("questai_user");
-      const user = storedUser ? JSON.parse(storedUser) : null;
-      const userName = user?.name || "Logged-in Player";
-      const userEmail = user?.email || "user@questai.io";
+        const userName = user?.name || "Logged-in Host";
+        const userEmail = user?.email || "host@questai.io";
 
-      const response = await fetch(
-        "http://localhost:5000/api/v1/arena/create",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            battleType,
-            userName,
-            userEmail,
-          }),
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
         }
-      );
 
-      const data = await response.json();
+        const response = await fetch(
+          "http://localhost:5000/api/v1/arena/create",
+          {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              battleType,
+              userName,
+              userEmail,
+            }),
+          }
+        );
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Failed to create room");
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Failed to create room");
+        }
+
+        setRoomCode(data.room.roomCode);
+      } catch (error) {
+        console.error(error);
+        alert("Failed to create room");
+      } finally {
+        setLoading(false);
       }
-
-      setRoomCode(data.room.roomCode);
-
-    } catch (error) {
-      console.error(error);
-      alert("Failed to create room");
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 
   function copyCode() {

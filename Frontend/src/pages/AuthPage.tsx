@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import Navbar from "../components/layout/Navbar";
 import Footer from "../components/layout/Footer";
 import { Sparkles, Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2, CheckCircle2 } from "lucide-react";
@@ -7,6 +8,7 @@ import { Sparkles, Mail, Lock, User, ArrowRight, Eye, EyeOff, Loader2, CheckCirc
 export default function AuthPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { login } = useAuth();
 
   const isSignUpDefault = location.pathname === "/signup";
   const [isSignUp, setIsSignUp] = useState(isSignUpDefault);
@@ -57,8 +59,8 @@ export default function AuthPage() {
       }
 
       setSuccess(data.message || (isSignUp ? "Account created!" : "Welcome back!"));
-      if (data.user) {
-        localStorage.setItem("questai_user", JSON.stringify(data.user));
+      if (data.token && data.user) {
+        login(data.token, data.user);
       }
 
       setTimeout(() => {
@@ -70,6 +72,7 @@ export default function AuthPage() {
       setLoading(false);
     }
   }
+
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col justify-between">

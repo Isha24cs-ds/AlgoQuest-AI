@@ -1,6 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { ArrowLeft, LogIn, Loader2 } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 import Navbar from "../../components/layout/Navbar";
 import Footer from "../../components/layout/Footer";
 
@@ -14,6 +15,7 @@ const battleNames: Record<string, string> = {
 export default function JoinRoom() {
   const navigate = useNavigate();
   const { battleType } = useParams();
+  const { requireAuth, token, user } = useAuth();
 
   const [roomCode, setRoomCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,47 +29,52 @@ export default function JoinRoom() {
       return;
     }
 
-    try {
-      setLoading(true);
+    requireAuth(async () => {
+      try {
+        setLoading(true);
 
-      const storedUser = localStorage.getItem("questai_user");
-      const user = storedUser ? JSON.parse(storedUser) : null;
-      const userName = user?.name || "Joining Player";
-      const userEmail = user?.email || "joining_user@questai.io";
+        const userName = user?.name || "Joining Player";
+        const userEmail = user?.email || "joining@questai.io";
 
-      const response = await fetch(
-        "http://localhost:5000/api/v1/arena/join",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            roomCode: roomCode.trim().toUpperCase(),
-            userName,
-            userEmail,
-          }),
+        const headers: Record<string, string> = {
+          "Content-Type": "application/json",
+        };
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
         }
-      );
 
-      const data = await response.json();
+        const response = await fetch(
+          "http://localhost:5000/api/v1/arena/join",
+          {
+            method: "POST",
+            headers,
+            body: JSON.stringify({
+              roomCode: roomCode.trim().toUpperCase(),
+              userName,
+              userEmail,
+            }),
+          }
+        );
 
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Room not found");
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          throw new Error(data.message || "Room not found");
+        }
+
+        navigate(`/arena/lobby/${data.room.roomCode}`);
+
+      } catch (error) {
+        console.error(error);
+        alert(
+          error instanceof Error
+            ? error.message
+            : "Unable to join room"
+        );
+      } finally {
+        setLoading(false);
       }
-
-      navigate(`/arena/lobby/${data.room.roomCode}`);
-
-    } catch (error) {
-      console.error(error);
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Unable to join room"
-      );
-    } finally {
-      setLoading(false);
-    }
+    });
   }
 
   return (
