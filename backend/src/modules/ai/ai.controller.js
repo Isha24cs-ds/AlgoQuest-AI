@@ -2,7 +2,8 @@ import { askNova } from "./ai.service.js";
 
 export async function chat(req, res) {
   try {
-    const answer = await askNova(req.body);
+    const userId = req.user?.id || req.body.userId;
+    const answer = await askNova({ ...req.body, userId });
 
     res.json({
       success: true,
@@ -17,4 +18,4 @@ export async function chat(req, res) {
       message: err.message,
     });
   }
-}
+}

@@ -41,7 +41,9 @@ model Question {
   title         String
   slug          String   @unique
   topic         String
+  pattern       String   @default("General")
   difficulty    Difficulty
+
 
   statement     String   @db.Text
 
@@ -85,7 +87,15 @@ model Submission {
   runtime      Float?
   memory       Float?
 
+  topic        String?
+  pattern      String?
+  difficulty   Difficulty?
+  attemptsCount Int      @default(1)
+  timeTaken    Int?
+  hintsUsed    Int      @default(0)
+
   createdAt    DateTime @default(now())
+
 
   userId       Int
   user         User @relation(fields: [userId], references: [id])

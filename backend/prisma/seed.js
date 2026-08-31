@@ -20,6 +20,7 @@ async function main() {
       update: {
         title: q.title,
         topic: q.topic,
+        pattern: q.pattern || "General",
         difficulty: q.difficulty,
         statement: q.statement,
         example: q.example,
@@ -35,7 +36,9 @@ async function main() {
         title: q.title,
         slug: q.slug,
         topic: q.topic,
+        pattern: q.pattern || "General",
         difficulty: q.difficulty,
+
         statement: q.statement,
         example: q.example,
         constraints: q.constraints,

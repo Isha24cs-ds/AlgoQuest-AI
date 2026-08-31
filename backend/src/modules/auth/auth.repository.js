@@ -11,3 +11,16 @@ export async function createUser(data) {
     data,
   });
 }
+
+export async function findUserById(id) {
+  return await prisma.user.findUnique({
+    where: { id: Number(id) },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+    },
+  });
+}
+

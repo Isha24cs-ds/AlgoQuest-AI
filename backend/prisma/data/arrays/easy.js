@@ -3,7 +3,9 @@ const arraysEasy = [
     title: "Largest Element in Array",
     slug: "largest-element-in-array",
     topic: "Arrays",
+    pattern: "Two Pointers",
     difficulty: "Easy",
+
 
     statement: `Given an array of integers nums, return the largest element present in the array.`,
 

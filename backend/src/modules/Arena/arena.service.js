@@ -20,7 +20,8 @@ function generateRoomCode() {
 export async function generateRoom(
   battleType = "dsa",
   userName = "Guest Host",
-  userEmail = "host@questai.io"
+  userEmail = "host@questai.io",
+  userId = null
 ) {
   const battleTopics = {
     dsa: "DSA",
@@ -30,9 +31,13 @@ export async function generateRoom(
   };
 
   const topic = battleTopics[battleType] || "DSA";
+  let hostUser;
 
-  // Upsert the actual logged-in user as Host in Postgres DB
-  const hostUser = await upsertUser(userName, userEmail);
+  if (userId) {
+    hostUser = { id: Number(userId) };
+  } else {
+    hostUser = await upsertUser(userName, userEmail);
+  }
 
   // Create room in Postgres DB
   const room = await createArenaRoom({
@@ -54,7 +59,8 @@ export async function generateRoom(
 export async function joinRoom(
   roomCode,
   userName = "Guest Player",
-  userEmail = "guest@questai.io"
+  userEmail = "guest@questai.io",
+  userId = null
 ) {
   const room = await findArenaRoom(roomCode);
 
@@ -62,8 +68,12 @@ export async function joinRoom(
     throw new Error("Room not found");
   }
 
-  // Upsert the actual logged-in user joining the room in Postgres DB
-  const joiningUser = await upsertUser(userName, userEmail);
+  let joiningUser;
+  if (userId) {
+    joiningUser = { id: Number(userId) };
+  } else {
+    joiningUser = await upsertUser(userName, userEmail);
+  }
 
   // Add the joining user to room in Postgres DB
   await addPlayerToRoom(room.id, joiningUser.id);
@@ -71,6 +81,7 @@ export async function joinRoom(
   const fullRoom = await getRoomWithPlayers(room.roomCode);
   return fullRoom || room;
 }
+
 
 export async function getLobby(roomCode) {
   const room = await getRoomWithPlayers(roomCode);

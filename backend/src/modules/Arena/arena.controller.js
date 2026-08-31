@@ -7,8 +7,11 @@ import {
 export async function createRoom(req, res) {
   try {
     const { battleType, userName, userEmail } = req.body;
+    const userId = req.user?.id;
+    const name = req.user?.name || userName;
+    const email = req.user?.email || userEmail;
 
-    const room = await generateRoom(battleType, userName, userEmail);
+    const room = await generateRoom(battleType, name, email, userId);
 
     res.status(200).json({
       success: true,
@@ -26,8 +29,11 @@ export async function createRoom(req, res) {
 export async function joinArenaRoom(req, res) {
   try {
     const { roomCode, userName, userEmail } = req.body;
+    const userId = req.user?.id;
+    const name = req.user?.name || userName;
+    const email = req.user?.email || userEmail;
 
-    const room = await joinRoom(roomCode, userName, userEmail);
+    const room = await joinRoom(roomCode, name, email, userId);
 
     res.status(200).json({
       success: true,
@@ -41,6 +47,7 @@ export async function joinArenaRoom(req, res) {
     });
   }
 }
+
 
 export async function getLobbyDetails(req, res) {
   try {

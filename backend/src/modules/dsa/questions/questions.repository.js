@@ -7,8 +7,10 @@ export async function getAllQuestions() {
   title: true,
   slug: true,
   topic: true,
+  pattern: true,
   difficulty: true,
 },
+
   });
 }
 export async function getQuestionBySlug(slug) {
