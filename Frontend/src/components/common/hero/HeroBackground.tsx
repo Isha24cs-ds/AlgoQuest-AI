@@ -2,32 +2,39 @@ import { motion } from "framer-motion";
 
 function HeroBackground() {
   return (
-    <>
-      {/* Blue Glow */}
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      {/* Light Background Grid */}
+      <div className="absolute inset-0 bg-grid-pattern opacity-70" />
+
+      {/* Subtle Light Glow */}
       <motion.div
-        className="absolute left-20 top-32 h-72 w-72 rounded-full bg-blue-500/20 blur-3xl"
+        className="absolute -top-32 left-1/3 h-96 w-96 rounded-full bg-amber-400/10 blur-3xl"
         animate={{
-          y: [0, -30, 0],
+          scale: [1, 1.1, 1],
+          opacity: [0.15, 0.25, 0.15],
         }}
         transition={{
           repeat: Infinity,
-          duration: 6,
+          duration: 8,
+          ease: "easeInOut",
         }}
       />
 
-      {/* Purple Glow */}
       <motion.div
-        className="absolute bottom-24 right-20 h-80 w-80 rounded-full bg-purple-500/20 blur-3xl"
+        className="absolute top-1/3 right-1/4 h-96 w-96 rounded-full bg-blue-400/10 blur-3xl"
         animate={{
-          y: [0, 30, 0],
+          scale: [1.1, 1, 1.1],
+          opacity: [0.2, 0.1, 0.2],
         }}
         transition={{
           repeat: Infinity,
-          duration: 7,
+          duration: 10,
+          ease: "easeInOut",
         }}
       />
-    </>
+    </div>
   );
 }
 
 export default HeroBackground;
+

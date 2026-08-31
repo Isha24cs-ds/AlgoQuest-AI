@@ -1,6 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
-import { ArrowLeft, LogIn } from "lucide-react";
+import { ArrowLeft, LogIn, Loader2 } from "lucide-react";
+import Navbar from "../../components/layout/Navbar";
+import Footer from "../../components/layout/Footer";
 
 const battleNames: Record<string, string> = {
   dsa: "DSA Battle",
@@ -51,7 +53,6 @@ export default function JoinRoom() {
 
     } catch (error) {
       console.error(error);
-
       alert(
         error instanceof Error
           ? error.message
@@ -63,30 +64,29 @@ export default function JoinRoom() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col justify-between">
+      <Navbar />
 
-      <div className="w-full max-w-2xl">
-
+      <main className="mx-auto max-w-2xl px-6 py-10 w-full">
         <button
           onClick={() => navigate(`/arena/room/${battleType}`)}
-          className="flex items-center gap-2 text-slate-400 hover:text-white mb-8"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 mb-6 transition"
         >
-          <ArrowLeft size={20} />
-          Back
+          <ArrowLeft size={16} />
+          <span>Back</span>
         </button>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-10">
-
-          <p className="text-green-400 font-semibold">
+        <div className="leetcode-panel rounded-2xl p-8 sm:p-10 border border-slate-200 bg-white shadow-xs">
+          <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">
             {battleName}
-          </p>
+          </span>
 
-          <h1 className="text-4xl font-bold mt-3">
+          <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
             Join Arena Room
           </h1>
 
-          <p className="text-slate-400 mt-3">
-            Enter the six-character code shared by your friend.
+          <p className="text-xs text-slate-600 mt-1 font-medium">
+            Enter the 6-character room code provided by your host.
           </p>
 
           <input
@@ -97,23 +97,21 @@ export default function JoinRoom() {
             }
             maxLength={6}
             placeholder="ENTER CODE"
-            className="w-full mt-10 bg-slate-800 border border-slate-700 rounded-xl px-5 py-5 text-center text-3xl font-bold tracking-[0.4em] uppercase outline-none focus:border-green-500"
+            className="w-full mt-8 bg-slate-50 border border-slate-200 rounded-xl px-5 py-4 text-center text-3xl font-extrabold font-mono tracking-[0.3em] uppercase text-slate-900 outline-none focus:border-emerald-500 focus:bg-white transition"
           />
 
           <button
             onClick={joinRoom}
             disabled={loading}
-            className="w-full mt-6 bg-green-600 hover:bg-green-700 disabled:bg-slate-700 py-4 rounded-xl text-lg font-semibold flex items-center justify-center gap-2 transition"
+            className="w-full mt-6 bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-300 text-white font-bold py-3.5 rounded-xl text-xs flex items-center justify-center gap-2 transition shadow-xs"
           >
-            <LogIn size={22} />
-
-            {loading ? "Joining Room..." : "Join Room"}
+            {loading ? <Loader2 size={16} className="animate-spin" /> : <LogIn size={16} />}
+            <span>{loading ? "Joining Room..." : "Join Arena Room"}</span>
           </button>
-
         </div>
+      </main>
 
-      </div>
-
+      <Footer />
     </div>
   );
-}
+}

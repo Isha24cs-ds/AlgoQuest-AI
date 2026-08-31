@@ -6,7 +6,7 @@ import HeroStats from "./HeroStats";
 
 function Hero() {
   return (
-    <section className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-950 text-white">
+    <section className="relative flex min-h-[90vh] items-center justify-center overflow-hidden bg-slate-50 text-slate-900 py-16">
       <HeroBackground />
 
       <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-6 text-center">

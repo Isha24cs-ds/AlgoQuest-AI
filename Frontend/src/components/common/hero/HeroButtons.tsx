@@ -1,23 +1,23 @@
 import { useNavigate } from "react-router-dom";
+import { ArrowRight, Compass } from "lucide-react";
 import Button from "../../ui/Button";
 
 function HeroButtons() {
   const navigate = useNavigate();
 
   return (
-    <div className="mt-10 flex flex-wrap justify-center gap-5">
-      <Button onClick={() => navigate("/portal")}>
-        🚀 Start Adventure
+    <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+      <Button size="lg" variant="primary" onClick={() => navigate("/portal")}>
+        <span>Start Learning Now</span>
+        <ArrowRight size={18} />
       </Button>
 
-      <Button
-        variant="secondary"
-        onClick={() => navigate("/worlds")}
-      >
-        🌍 Explore Worlds
+      <Button size="lg" variant="glass" onClick={() => navigate("/journey")}>
+        <Compass size={18} />
+        <span>Explore Curricula</span>
       </Button>
     </div>
   );
 }
 
-export default HeroButtons;
+export default HeroButtons;

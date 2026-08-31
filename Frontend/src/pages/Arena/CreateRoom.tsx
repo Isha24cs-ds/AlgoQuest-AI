@@ -1,6 +1,8 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { Copy, ArrowLeft } from "lucide-react";
+import { Copy, ArrowLeft, Loader2, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import Navbar from "../../components/layout/Navbar";
+import Footer from "../../components/layout/Footer";
 
 const battleNames: Record<string, string> = {
   dsa: "DSA Battle",
@@ -58,80 +60,77 @@ export default function CreateRoom() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col justify-between">
+      <Navbar />
 
-      <div className="w-full max-w-2xl">
-
+      <main className="mx-auto max-w-2xl px-6 py-10 w-full">
         <button
           onClick={() => navigate(`/arena/room/${battleType}`)}
-          className="flex items-center gap-2 text-slate-400 hover:text-white mb-8"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 mb-6 transition"
         >
-          <ArrowLeft size={20} />
-          Back
+          <ArrowLeft size={16} />
+          <span>Back</span>
         </button>
 
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-10">
-
-          <p className="text-red-400 font-semibold">
+        <div className="leetcode-panel rounded-2xl p-8 sm:p-10 border border-slate-200 bg-white shadow-xs">
+          <span className="text-xs font-bold text-rose-600 uppercase tracking-wider">
             {battleName}
-          </p>
+          </span>
 
-          <h1 className="text-4xl font-bold mt-3">
+          <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 mt-2">
             Create Arena Room
           </h1>
 
-          <p className="text-slate-400 mt-3">
-            Create a room and invite your friends to compete.
+          <p className="text-xs text-slate-600 mt-1 font-medium">
+            Generate a 6-character room code and share it with your competitive peers.
           </p>
 
           {!roomCode ? (
             <button
               onClick={createRoom}
               disabled={loading}
-              className="w-full mt-10 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-700 py-4 rounded-xl text-lg font-semibold transition"
+              className="w-full mt-8 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3.5 rounded-xl text-xs transition shadow-xs flex items-center justify-center gap-2 border border-amber-400"
             >
-              {loading ? "Creating Room..." : "Generate Room Code"}
+              {loading && <Loader2 size={16} className="animate-spin" />}
+              <span>{loading ? "Generating Code..." : "Generate Room Code"}</span>
             </button>
           ) : (
             <>
-              <div className="mt-10">
-
-                <p className="text-slate-400 mb-3">
-                  Share this code with your friends
+              <div className="mt-8">
+                <p className="text-xs font-semibold text-slate-500 mb-2">
+                  Share this 6-character code with your friends:
                 </p>
 
-                <div className="bg-slate-800 border border-slate-700 rounded-2xl p-7 flex items-center justify-between">
-
-                  <span className="text-4xl font-bold tracking-[0.4em]">
+                <div className="bg-slate-50 border border-slate-200 rounded-xl p-5 flex items-center justify-between">
+                  <span className="text-3xl font-extrabold font-mono tracking-[0.3em] text-slate-900">
                     {roomCode}
                   </span>
 
                   <button
                     onClick={copyCode}
-                    className="p-3 rounded-lg bg-slate-700 hover:bg-slate-600"
+                    className="p-2.5 rounded-lg bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 transition shadow-xs"
+                    title="Copy Room Code"
                   >
-                    <Copy size={22} />
+                    <Copy size={18} />
                   </button>
-
                 </div>
-
               </div>
 
               <button
                 onClick={() =>
                   navigate(`/arena/lobby/${roomCode}`)
                 }
-                className="w-full mt-8 bg-green-600 hover:bg-green-700 py-4 rounded-xl text-lg font-semibold transition"
+                className="w-full mt-6 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 rounded-xl text-xs transition shadow-xs flex items-center justify-center gap-2"
               >
-                Enter Waiting Lobby →
+                <span>Enter Waiting Lobby</span>
+                <ArrowRight size={14} />
               </button>
             </>
           )}
-
         </div>
+      </main>
 
-      </div>
-
+      <Footer />
     </div>
   );
-}
+}

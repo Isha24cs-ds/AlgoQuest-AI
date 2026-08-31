@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../../components/layout/Navbar";
+import Footer from "../../components/layout/Footer";
+import { Trophy, RefreshCw, ArrowLeft, CheckCircle2, XCircle } from "lucide-react";
 
 const questions = [
   {
@@ -134,129 +137,129 @@ export default function Quiz() {
     const percentage = Math.round((score / questions.length) * 100);
 
     return (
-      <div className="min-h-screen bg-slate-950 text-white flex justify-center items-center p-8">
-        <div className="bg-slate-900 rounded-3xl p-10 max-w-xl w-full text-center">
+      <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col justify-between">
+        <Navbar />
+        <main className="flex justify-center items-center p-8 flex-1">
+          <div className="leetcode-panel rounded-2xl p-10 max-w-lg w-full text-center shadow-md border border-slate-200">
+            <div className="h-16 w-16 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center mx-auto mb-4">
+              <Trophy size={36} />
+            </div>
 
-          <h1 className="text-5xl font-bold mb-6">
-            🎉 Quiz Complete!
-          </h1>
+            <h1 className="font-heading text-3xl font-extrabold text-slate-900 mb-2">
+              Quiz Completed!
+            </h1>
 
-          <p className="text-2xl mb-4">
-            Your Score
-          </p>
+            <p className="text-sm text-slate-500 font-medium mb-6">
+              Array Fundamentals Assessment
+            </p>
 
-          <div className="text-6xl font-bold text-yellow-400 mb-6">
-            {score} / {questions.length}
+            <div className="text-5xl font-extrabold text-amber-600 mb-2">
+              {score} / {questions.length}
+            </div>
+
+            <div className="text-lg font-bold text-slate-700 mb-8">
+              Accuracy: {percentage}%
+            </div>
+
+            <div className="space-y-3">
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition"
+              >
+                <RefreshCw size={18} />
+                <span>Retry Assessment</span>
+              </button>
+
+              <button
+                onClick={() => navigate("/arrays")}
+                className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition"
+              >
+                <ArrowLeft size={18} />
+                <span>Back to Arrays Track</span>
+              </button>
+            </div>
           </div>
-
-          <div className="text-3xl mb-8">
-            {percentage}%
-          </div>
-
-          <div className="space-y-4">
-
-            <button
-              onClick={() => window.location.reload()}
-              className="w-full bg-purple-600 hover:bg-purple-700 py-3 rounded-xl font-bold"
-            >
-              🔄 Retry Quiz
-            </button>
-
-            <button
-              onClick={() => navigate("/arrays")}
-              className="w-full bg-slate-700 hover:bg-slate-600 py-3 rounded-xl font-bold"
-            >
-              🏠 Back to Arrays Kingdom
-            </button>
-
-          </div>
-
-        </div>
+        </main>
+        <Footer />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-white">
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 flex flex-col justify-between">
+      <Navbar />
 
-      <div className="max-w-3xl mx-auto p-8">
+      <main className="mx-auto max-w-3xl px-6 py-10 w-full">
+        {/* Progress Bar & Header */}
+        <div className="leetcode-panel rounded-xl p-6 mb-6">
+          <div className="flex justify-between items-center text-xs font-bold text-slate-600 mb-3">
+            <span>Question {current + 1} of {questions.length}</span>
+            <span className="text-amber-600">Current Score: {score} XP</span>
+          </div>
 
-        <div className="flex justify-between mb-4">
-          <span>
-            Question {current + 1}/{questions.length}
-          </span>
-
-          <span>
-            ⭐ Score: {score}
-          </span>
+          <div className="w-full bg-slate-100 rounded-full h-2.5 overflow-hidden">
+            <div
+              className="bg-amber-500 h-2.5 rounded-full transition-all duration-300"
+              style={{
+                width: `${((current + 1) / questions.length) * 100}%`
+              }}
+            />
+          </div>
         </div>
 
-        <div className="w-full bg-slate-700 rounded-full h-3 mb-8">
-          <div
-            className="bg-purple-500 h-3 rounded-full transition-all"
-            style={{
-              width: `${((current + 1) / questions.length) * 100}%`
-            }}
-          />
-        </div>
-
-        <div className="bg-slate-900 rounded-3xl p-8">
-
-          <h2 className="text-3xl font-bold mb-8">
+        {/* Question Panel */}
+        <div className="leetcode-panel rounded-2xl p-8 border border-slate-200">
+          <h2 className="font-heading text-xl sm:text-2xl font-bold text-slate-900 mb-6">
             {question.question}
           </h2>
 
-          <div className="space-y-4">
-
+          <div className="space-y-3">
             {question.options.map((option, index) => {
-
-              let color =
-                "bg-slate-800 hover:bg-slate-700";
+              let style =
+                "bg-white border-slate-200 text-slate-800 hover:bg-slate-50 hover:border-slate-300";
 
               if (showAnswer) {
-
                 if (index === question.answer) {
-                  color = "bg-green-600";
+                  style = "bg-emerald-50 border-emerald-300 text-emerald-900 font-semibold";
                 } else if (index === selected) {
-                  color = "bg-red-600";
+                  style = "bg-rose-50 border-rose-300 text-rose-900 font-semibold";
                 }
-
               }
 
               return (
                 <button
                   key={index}
                   onClick={() => handleAnswer(index)}
-                  className={`${color} w-full text-left p-4 rounded-xl transition`}
+                  className={`w-full text-left p-4 rounded-xl border transition-all duration-200 text-sm font-medium flex items-center justify-between ${style}`}
                 >
-                  {option}
+                  <span>{option}</span>
+                  {showAnswer && index === question.answer && (
+                    <CheckCircle2 size={18} className="text-emerald-600" />
+                  )}
+                  {showAnswer && index === selected && index !== question.answer && (
+                    <XCircle size={18} className="text-rose-600" />
+                  )}
                 </button>
               );
             })}
-
           </div>
 
           {showAnswer && (
-
-            <div className="text-center mt-8">
-
+            <div className="text-center mt-8 pt-6 border-t border-slate-100">
               <button
                 onClick={nextQuestion}
-                className="bg-purple-600 hover:bg-purple-700 px-8 py-3 rounded-xl font-bold"
+                className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-8 py-3 rounded-xl font-bold transition shadow-xs"
               >
                 {current === questions.length - 1
-                  ? "Finish Quiz 🏆"
+                  ? "Finish Assessment 🏆"
                   : "Next Question ➜"}
               </button>
-
             </div>
-
           )}
-
         </div>
+      </main>
 
-      </div>
-
+      <Footer />
     </div>
   );
-}
+}

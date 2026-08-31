@@ -1,3 +1,5 @@
+import { ArrowRight } from "lucide-react";
+
 type LessonCardProps = {
   icon: string;
   title: string;
@@ -14,17 +16,26 @@ export default function LessonCard({
   return (
     <button
       onClick={onClick}
-      className="w-full bg-slate-900 border border-slate-700 rounded-2xl p-6 hover:border-blue-500 hover:scale-[1.02] transition duration-300 text-left"
+      className="leetcode-card w-full text-left rounded-xl p-6 border border-slate-200 bg-white hover:border-blue-500/50 transition-all flex flex-col justify-between h-48 group shadow-xs"
     >
-      <div className="text-5xl">{icon}</div>
+      <div>
+        <div className="h-11 w-11 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-2xl">
+          {icon}
+        </div>
 
-      <h2 className="text-2xl font-bold mt-4 text-white">
-        {title}
-      </h2>
+        <h3 className="font-heading text-lg font-bold mt-4 text-slate-900 group-hover:text-blue-600 transition-colors">
+          {title}
+        </h3>
 
-      <p className="text-slate-400 mt-2">
-        {description}
-      </p>
+        <p className="text-xs text-slate-500 mt-1 font-medium leading-relaxed">
+          {description}
+        </p>
+      </div>
+
+      <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600">
+        <span>Start Lesson</span>
+        <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+      </div>
     </button>
   );
-}
+}

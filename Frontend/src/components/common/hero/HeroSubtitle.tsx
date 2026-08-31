@@ -3,18 +3,16 @@ import { motion } from "framer-motion";
 function HeroSubtitle() {
   return (
     <motion.p
-      className="mt-8 max-w-3xl text-lg leading-8 text-slate-300 md:text-xl"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.5 }}
+      className="mt-6 max-w-2xl text-base text-slate-600 sm:text-lg md:text-xl leading-relaxed font-medium"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.2, duration: 0.8 }}
     >
-      Learn Data Structures, Full Stack Development,
-      Artificial Intelligence, System Design,
-      Machine Learning and more through
-      immersive worlds, coding battles,
-      AI mentorship and real-world projects.
+      Accelerate your software engineering career. Learn Data Structures,
+      System Design, Full Stack, and AI through real-time competitive battles,
+      interactive visualizer worlds, and automated code analysis.
     </motion.p>
   );
 }
 
-export default HeroSubtitle;
+export default HeroSubtitle;
