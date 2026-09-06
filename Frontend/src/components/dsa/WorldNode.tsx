@@ -7,6 +7,8 @@ interface WorldNodeProps {
   current?: boolean;
   difficulty?: string;
   problemCount?: number;
+  solvedCount?: number;
+  progressPercent?: number;
   onClick?: () => void;
 }
 
@@ -17,6 +19,8 @@ function WorldNode({
   current = false,
   difficulty = "Medium",
   problemCount = 15,
+  solvedCount = 0,
+  progressPercent = 0,
   onClick,
 }: WorldNodeProps) {
   const getDifficultyColor = (diff: string) => {
@@ -35,31 +39,39 @@ function WorldNode({
       <button
         onClick={onClick}
         disabled={!unlocked}
-        className={`leetcode-card w-full text-left rounded-xl p-6 border transition-all duration-200 flex flex-col justify-between h-56 ${
+        className={`leetcode-card w-full text-left rounded-xl p-6 border transition-all duration-200 flex flex-col justify-between h-60 ${
           unlocked
             ? current
               ? "bg-white border-blue-500 ring-2 ring-blue-500/20 shadow-md"
-              : "bg-white border-slate-200 hover:border-blue-400 hover:shadow-md"
+              : "bg-white border-slate-200 hover:border-blue-400 hover:shadow-md cursor-pointer"
             : "bg-slate-50 border-slate-200 opacity-60 cursor-not-allowed"
         }`}
       >
         <div>
-          {/* Top Row: Icon & Difficulty */}
+          {/* Top Row: Icon, Solved pill & Difficulty */}
           <div className="flex items-center justify-between">
             <div className="h-12 w-12 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center text-2xl">
               {icon}
             </div>
-            
-            {unlocked ? (
-              <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${getDifficultyColor(difficulty)}`}>
-                {difficulty}
-              </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
-                <Lock size={12} />
-                Locked
-              </span>
-            )}
+
+            <div className="flex items-center gap-2">
+              {unlocked && solvedCount > 0 && (
+                <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                  {solvedCount}/{problemCount} Solved
+                </span>
+              )}
+
+              {unlocked ? (
+                <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full border ${getDifficultyColor(difficulty)}`}>
+                  {difficulty}
+                </span>
+              ) : (
+                <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-500 border border-slate-200">
+                  <Lock size={12} />
+                  Locked
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Title & Stats */}
@@ -68,19 +80,32 @@ function WorldNode({
             {current && <CheckCircle2 size={18} className="text-blue-600" />}
           </h3>
 
-          <p className="text-xs text-slate-500 mt-1 font-medium">
-            {problemCount} Interactive Problems
-          </p>
+          <div className="flex items-center justify-between text-xs text-slate-500 mt-1 font-medium">
+            <span>{problemCount} Interactive Problems</span>
+            {unlocked && progressPercent > 0 && (
+              <span className="font-bold text-emerald-600">{progressPercent}%</span>
+            )}
+          </div>
+
+          {/* Progress bar */}
+          {unlocked && progressPercent > 0 && (
+            <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2 overflow-hidden border border-slate-200">
+              <div
+                className="bg-emerald-500 h-full rounded-full transition-all duration-300"
+                style={{ width: `${progressPercent}%` }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Bottom CTA */}
-        <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+        <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
           <span className="text-[11px] font-semibold text-slate-400">
-            {unlocked ? "Available Track" : "Prerequisite Required"}
+            {unlocked ? (solvedCount > 0 ? `${solvedCount} Solved` : "Available Track") : "Prerequisite Required"}
           </span>
 
           <span className={`inline-flex items-center gap-1 text-xs font-bold ${unlocked ? "text-blue-600" : "text-slate-400"}`}>
-            <span>{unlocked ? "Solve Module" : "Locked"}</span>
+            <span>{unlocked ? (solvedCount > 0 ? "Continue Track" : "Solve Module") : "Locked"}</span>
             {unlocked && <ArrowRight size={13} />}
           </span>
         </div>

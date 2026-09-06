@@ -4,76 +4,136 @@ import {
   getTopicQuestionsCount,
 } from "./progress.repository.js";
 
-const TOPICS_LIST = [
-  "Arrays",
-  "Strings",
-  "Linked List",
-  "Stack",
-  "Queue",
-  "Trees",
-  "Graphs"
-];
+export const TOPICS_CONFIG = {
+  "Variables": { name: "Programming Fundamentals", total: 39, keys: ["variable", "math", "fundamental", "basic", "type"] },
+  "Arrays": { name: "Arrays", total: 25, keys: ["array", "prefix sum", "two pointer", "sliding window", "kadane"] },
+  "Strings": { name: "Strings", total: 20, keys: ["string", "palindrome", "anagram"] },
+  "Linked List": { name: "Linked Lists", total: 18, keys: ["link", "linked list", "linkedlist"] },
+  "Stack": { name: "Stacks", total: 15, keys: ["stack", "monotonic stack"] },
+  "Queue": { name: "Queues", total: 14, keys: ["queue", "deque", "buffer"] },
+  "Trees": { name: "Trees", total: 30, keys: ["tree", "bst", "trie", "heap"] },
+  "Graphs": { name: "Graphs", total: 28, keys: ["graph", "dfs", "bfs", "dijkstra"] },
+};
+
+export function normalizeTopic(rawTopic) {
+  if (!rawTopic) return "Arrays";
+  const str = String(rawTopic).toLowerCase().trim();
+
+  for (const [canonical, config] of Object.entries(TOPICS_CONFIG)) {
+    if (config.keys.some((k) => str.includes(k))) {
+      return canonical;
+    }
+  }
+  return "Arrays";
+}
 
 export async function getUserProgress(userId) {
   const submissions = await getUserSubmissionsSummary(userId);
-  const totalQuestions = await getTotalQuestionsCount();
-  const topicTotalCounts = await getTopicQuestionsCount();
+  const dbTopicCounts = await getTopicQuestionsCount();
 
-  if (!submissions || submissions.length === 0) {
-    const emptyTopics = {};
-    TOPICS_LIST.forEach((t) => {
-      emptyTopics[t] = 0;
-    });
+  const topicStats = {};
+  const topicsPercentMap = {};
 
-    return {
-      overall: 0,
-      topics: emptyTopics,
+  Object.entries(TOPICS_CONFIG).forEach(([canonical, config]) => {
+    const totalCount = Math.max(config.total, dbTopicCounts[canonical] || 0);
+    topicStats[canonical] = {
+      name: config.name,
       solved: 0,
       attempted: 0,
-      totalQuestions: totalQuestions || 0,
+      submitted: 0,
+      acceptedSubmissions: 0,
+      total: totalCount,
+      percentage: 0,
+      accuracy: 0,
+    };
+    topicsPercentMap[canonical] = 0;
+  });
+
+  const totalQuestionsSum = Object.values(topicStats).reduce((acc, curr) => acc + curr.total, 0);
+
+  if (!submissions || submissions.length === 0) {
+    return {
+      overall: 0,
+      topics: topicsPercentMap,
+      topicStats,
+      solved: 0,
+      attempted: 0,
+      submitted: 0,
+      totalQuestions: totalQuestionsSum,
+      accuracy: 0,
     };
   }
 
   const attemptedQuestionIds = new Set();
   const solvedQuestionIds = new Set();
-  const topicSolvedQuestionIds = {};
 
-  TOPICS_LIST.forEach((t) => {
-    topicSolvedQuestionIds[t] = new Set();
+  const topicSolvedSets = {};
+  const topicAttemptedSets = {};
+
+  Object.keys(TOPICS_CONFIG).forEach((t) => {
+    topicSolvedSets[t] = new Set();
+    topicAttemptedSets[t] = new Set();
   });
 
+  let totalAcceptedSubmissions = 0;
+
   submissions.forEach((sub) => {
-    attemptedQuestionIds.add(sub.questionId);
-    const topic = sub.topic || sub.question?.topic || "Arrays";
+    const canonical = normalizeTopic(sub.topic || sub.question?.topic);
+    const qId = sub.questionId;
+
+    attemptedQuestionIds.add(qId);
+    if (topicAttemptedSets[canonical]) {
+      topicAttemptedSets[canonical].add(qId);
+    }
+
+    if (topicStats[canonical]) {
+      topicStats[canonical].submitted += 1;
+    }
 
     if (sub.status === "ACCEPTED") {
-      solvedQuestionIds.add(sub.questionId);
-      if (!topicSolvedQuestionIds[topic]) {
-        topicSolvedQuestionIds[topic] = new Set();
+      totalAcceptedSubmissions += 1;
+      solvedQuestionIds.add(qId);
+
+      if (topicSolvedSets[canonical]) {
+        topicSolvedSets[canonical].add(qId);
       }
-      topicSolvedQuestionIds[topic].add(sub.questionId);
+
+      if (topicStats[canonical]) {
+        topicStats[canonical].acceptedSubmissions += 1;
+      }
     }
   });
 
-  const solvedCount = solvedQuestionIds.size;
-  const attemptedCount = attemptedQuestionIds.size;
-
-  const overall = totalQuestions > 0
-    ? Math.round((solvedCount / totalQuestions) * 100)
-    : Math.round((solvedCount / Math.max(1, attemptedCount)) * 100);
-
-  const topicsProgress = {};
-  TOPICS_LIST.forEach((topic) => {
-    const solvedInTopic = topicSolvedQuestionIds[topic] ? topicSolvedQuestionIds[topic].size : 0;
-    const totalInTopic = topicTotalCounts[topic] || 10;
-    topicsProgress[topic] = Math.round((solvedInTopic / Math.max(1, totalInTopic)) * 100);
+  // Calculate percentages and counts per topic
+  Object.keys(TOPICS_CONFIG).forEach((topic) => {
+    const stat = topicStats[topic];
+    stat.solved = topicSolvedSets[topic]?.size || 0;
+    stat.attempted = topicAttemptedSets[topic]?.size || 0;
+    stat.percentage = Math.min(100, Math.round((stat.solved / Math.max(1, stat.total)) * 100));
+    stat.accuracy = stat.submitted > 0 ? Math.round((stat.acceptedSubmissions / stat.submitted) * 100) : 0;
+    topicsPercentMap[topic] = stat.percentage;
   });
+
+  const totalSolved = solvedQuestionIds.size;
+  const totalAttempted = attemptedQuestionIds.size;
+  const totalSubmitted = submissions.length;
+
+  const overall = totalQuestionsSum > 0
+    ? Math.min(100, Math.round((totalSolved / totalQuestionsSum) * 100))
+    : 0;
+
+  const overallAccuracy = totalSubmitted > 0
+    ? Math.round((totalAcceptedSubmissions / totalSubmitted) * 100)
+    : 0;
 
   return {
     overall,
-    topics: topicsProgress,
-    solved: solvedCount,
-    attempted: attemptedCount,
-    totalQuestions,
+    topics: topicsPercentMap,
+    topicStats,
+    solved: totalSolved,
+    attempted: totalAttempted,
+    submitted: totalSubmitted,
+    totalQuestions: totalQuestionsSum,
+    accuracy: overallAccuracy,
   };
 }

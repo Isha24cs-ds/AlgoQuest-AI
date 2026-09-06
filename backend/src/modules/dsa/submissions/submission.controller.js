@@ -3,18 +3,37 @@ import { submitSolution, fetchUserSubmissions } from "./submission.service.js";
 export async function createSubmissionHandler(req, res) {
   try {
     const userId = req.user?.id || req.body.userId || 1;
-    const { questionId, code, language, status, runtime, memory, timeTaken, hintsUsed } = req.body;
+    const {
+      questionId,
+      slug,
+      title,
+      topic,
+      pattern,
+      difficulty,
+      code,
+      language,
+      status,
+      runtime,
+      memory,
+      timeTaken,
+      hintsUsed,
+    } = req.body;
 
-    if (!questionId) {
+    if (!questionId && !slug) {
       return res.status(400).json({
         success: false,
-        message: "questionId is required",
+        message: "questionId or slug is required",
       });
     }
 
     const submission = await submitSolution({
       userId,
       questionId,
+      slug,
+      title,
+      topic,
+      pattern,
+      difficulty,
       code,
       language,
       status: status || "ACCEPTED",

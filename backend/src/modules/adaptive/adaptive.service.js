@@ -1,4 +1,5 @@
 import { getUserSubmissionsWithQuestions, getAllAvailableQuestions } from "./adaptive.repository.js";
+import { normalizeTopic } from "../progress/progress.service.js";
 
 const DEFAULT_TOPICS = [
   "Arrays",
@@ -46,7 +47,8 @@ export async function calculateMastery(userId) {
 
   // Set baseline score of 50 for topics/patterns that have at least 1 attempt
   submissions.forEach((sub) => {
-    const topic = sub.topic || sub.question?.topic;
+    const rawTopic = sub.topic || sub.question?.topic;
+    const topic = normalizeTopic(rawTopic);
     const pattern = sub.pattern || sub.question?.pattern;
 
     if (topic && topicStats[topic] && topicStats[topic].attempts === 0) {
