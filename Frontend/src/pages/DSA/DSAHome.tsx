@@ -161,46 +161,64 @@ function DSAHome() {
   const [progress, setProgress] = useState<ProgressData | null>(null);
   const [mastery, setMastery] = useState<MasteryData | null>(null);
   const [recommendation, setRecommendation] = useState<RecommendationData | null>(null);
+  const [loadingRec, setLoadingRec] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterDiff, setFilterDiff] = useState<"All" | "Easy" | "Medium" | "Hard">("All");
 
   useEffect(() => {
     async function fetchUserData() {
-      if (!isAuthenticated || !token) {
-        setProgress(null);
-        setMastery(null);
-        setRecommendation(null);
-        return;
-      }
+      setLoadingRec(true);
 
       try {
         const headers: Record<string, string> = {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
         };
+        if (token) {
+          headers["Authorization"] = `Bearer ${token}`;
+        }
 
-        const [progRes, masteryRes, recRes] = await Promise.all([
-          fetch(`${API_BASE_URL}/progress`, { headers }),
-          fetch(`${API_BASE_URL}/adaptive/mastery`, { headers }),
+        const requests: Promise<Response>[] = [
           fetch(`${API_BASE_URL}/adaptive/next-question`, { headers }),
-        ]);
+        ];
 
-        if (progRes.ok) {
-          const pData = await progRes.json();
-          setProgress(pData.progress);
+        if (isAuthenticated && token) {
+          requests.push(fetch(`${API_BASE_URL}/progress`, { headers }));
+          requests.push(fetch(`${API_BASE_URL}/adaptive/mastery`, { headers }));
         }
 
-        if (masteryRes.ok) {
-          const mData = await masteryRes.json();
-          setMastery(mData.data);
-        }
+        const responses = await Promise.all(requests);
+        const recRes = responses[0];
+        const progRes = responses[1];
+        const masteryRes = responses[2];
 
-        if (recRes.ok) {
+        if (recRes && recRes.ok) {
           const rData = await recRes.json();
-          setRecommendation(rData);
+          if (rData && rData.success) {
+            setRecommendation(rData);
+          }
+        }
+
+        if (progRes && progRes.ok) {
+          const pData = await progRes.json();
+          if (pData && pData.progress) {
+            setProgress(pData.progress);
+          }
+        } else if (!isAuthenticated) {
+          setProgress(null);
+        }
+
+        if (masteryRes && masteryRes.ok) {
+          const mData = await masteryRes.json();
+          if (mData && mData.data) {
+            setMastery(mData.data);
+          }
+        } else if (!isAuthenticated) {
+          setMastery(null);
         }
       } catch (err) {
         console.error("Error fetching user DSA progress:", err);
+      } finally {
+        setLoadingRec(false);
       }
     }
 
@@ -376,11 +394,18 @@ function DSAHome() {
                 </h2>
               </div>
 
-              {recommendation && isAuthenticated ? (
+              {loadingRec && !recommendation ? (
+                <div className="text-xs text-slate-400 space-y-2 py-4">
+                  <BrainCircuit className="h-8 w-8 text-amber-400 animate-pulse" />
+                  <p>Analyzing problem history and identifying weak patterns...</p>
+                </div>
+              ) : recommendation ? (
                 <div className="space-y-4 text-xs">
                   <div className="grid grid-cols-2 gap-3">
                     <div className="bg-slate-800/80 p-2.5 rounded-xl border border-slate-700">
-                      <span className="text-slate-400 font-medium block text-[11px]">Weak Area</span>
+                      <span className="text-slate-400 font-medium block text-[11px]">
+                        {isAuthenticated ? "Weak Area / Focus" : "Focus Topic"}
+                      </span>
                       <span className="font-bold text-slate-100 text-sm mt-0.5 block">
                         {recommendation.recommendation.topic}
                       </span>
@@ -396,10 +421,27 @@ function DSAHome() {
 
                   <div className="flex items-center justify-between bg-slate-800/50 p-2.5 rounded-xl border border-slate-800">
                     <span className="text-slate-400 font-medium">Difficulty Level:</span>
-                    <span className="px-2.5 py-0.5 rounded-full font-bold text-[11px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full font-bold text-[11px] border ${
+                        recommendation.recommendation.difficulty === "Easy"
+                          ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30"
+                          : recommendation.recommendation.difficulty === "Hard"
+                          ? "bg-rose-500/20 text-rose-400 border-rose-500/30"
+                          : "bg-amber-500/20 text-amber-400 border-amber-500/30"
+                      }`}
+                    >
                       {recommendation.recommendation.difficulty}
                     </span>
                   </div>
+
+                  {recommendation.question?.title && (
+                    <div className="flex items-center justify-between bg-slate-800/40 px-3 py-2 rounded-xl border border-slate-700/60 text-[11px]">
+                      <span className="text-slate-400">Target Problem:</span>
+                      <span className="font-bold text-amber-200 truncate max-w-[180px]">
+                        {recommendation.question.title}
+                      </span>
+                    </div>
+                  )}
 
                   <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-amber-200 leading-relaxed font-medium">
                     💡 <span className="font-semibold text-amber-300">Reason:</span> {recommendation.recommendation.reason}
@@ -407,12 +449,8 @@ function DSAHome() {
                 </div>
               ) : (
                 <div className="text-xs text-slate-400 space-y-2 py-4">
-                  <BrainCircuit className="h-8 w-8 text-amber-400 animate-pulse" />
-                  <p>
-                    {isAuthenticated
-                      ? "Analyzing problem history and identifying weak patterns..."
-                      : "Log in to activate your AI-driven adaptive recommendations."}
-                  </p>
+                  <BrainCircuit className="h-8 w-8 text-amber-400" />
+                  <p>Log in to activate your AI-driven adaptive recommendations.</p>
                 </div>
               )}
             </div>

@@ -95,6 +95,7 @@ vector<int> twoSum(vector<int>& nums, int target) {
   title: "Best Time to Buy and Sell Stock",
   slug: "best-time-to-buy-and-sell-stock",
   topic: "Arrays",
+  pattern: "Two Pointers",
   difficulty: "Medium",
 
   statement: `You are given an array prices where prices[i] is the price of a given stock on the ith day.
@@ -174,6 +175,7 @@ int maxProfit(vector<int>& prices) {
   title: "Rotate Array",
   slug: "rotate-array",
   topic: "Arrays",
+  pattern: "Two Pointers",
   difficulty: "Medium",
 
   statement: `Given an integer array nums, rotate the array to the right by k steps, where k is non-negative.
@@ -250,6 +252,7 @@ void rotate(vector<int>& nums, int k) {
   title: "Next Permutation",
   slug: "next-permutation",
   topic: "Arrays",
+  pattern: "Two Pointers",
   difficulty: "Medium",
 
   statement: `A permutation of an array of integers is an arrangement of its members into a sequence or linear order.

@@ -3,7 +3,7 @@ const arraysEasy = [
     title: "Largest Element in Array",
     slug: "largest-element-in-array",
     topic: "Arrays",
-    pattern: "Two Pointers",
+    pattern: "Array Traversal",
     difficulty: "Easy",
 
 
@@ -54,6 +54,7 @@ const arraysEasy = [
     title: "Second Largest Element",
     slug: "second-largest-element",
     topic: "Arrays",
+    pattern: "Array Traversal",
     difficulty: "Easy",
 
     statement: `Given an array of integers, return the second largest distinct element. If it doesn't exist, return -1.`,
@@ -115,6 +116,7 @@ const arraysEasy = [
     slug:"check-if-array-is-sorted",
 
     topic:"Arrays",
+    pattern: "Array Traversal",
 
     difficulty:"Easy",
 
@@ -167,6 +169,7 @@ const arraysEasy = [
   title: "Remove Duplicates from Sorted Array",
   slug: "remove-duplicates-from-sorted-array",
   topic: "Arrays",
+  pattern: "Two Pointers",
   difficulty: "Easy",
 
   statement:
@@ -226,6 +229,7 @@ const arraysEasy = [
   slug:"left-rotate-array-by-one",
 
   topic:"Arrays",
+  pattern: "Array Manipulation",
 
   difficulty:"Easy",
 
@@ -280,6 +284,7 @@ const arraysEasy = [
   slug:"move-zeroes",
 
   topic:"Arrays",
+  pattern: "Two Pointers",
 
   difficulty:"Easy",
 
@@ -339,6 +344,7 @@ const arraysEasy = [
   slug:"linear-search",
 
   topic:"Arrays",
+  pattern: "Searching",
 
   difficulty:"Easy",
 
@@ -393,6 +399,7 @@ const arraysEasy = [
   slug: "find-missing-number",
 
   topic: "Arrays",
+  pattern: "Hashing",
 
   difficulty: "Easy",
 
@@ -451,6 +458,7 @@ const arraysEasy = [
   slug:"maximum-consecutive-ones",
 
   topic:"Arrays",
+  pattern: "Sliding Window",
 
   difficulty:"Easy",
 
@@ -521,6 +529,7 @@ const arraysEasy = [
   slug:"single-number",
 
   topic:"Arrays",
+  pattern: "Bit Manipulation",
 
   difficulty:"Easy",
 
