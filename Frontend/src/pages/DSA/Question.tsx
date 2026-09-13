@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation, useSearchParams } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { API_BASE_URL } from "../../config";
 import CodeEditor from "../../components/CodeEditor";
 import NovaAI from "../../components/NovaAI";
+import ArenaLiveChat from "../../components/Arena/ArenaLiveChat";
 
 import {
   ArrowLeft,
@@ -96,6 +97,15 @@ ${standaloneMatch[1].trim()} {
 export default function QuestionPage() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+
+  const activeArenaRoomCode = (
+    location.state?.roomCode ||
+    searchParams.get("room") ||
+    sessionStorage.getItem("activeArenaRoom") ||
+    ""
+  ).toUpperCase();
 
   const { requireAuth, token } = useAuth();
 
@@ -492,6 +502,13 @@ export default function QuestionPage() {
           <span className="font-heading text-sm font-bold text-slate-100 truncate max-w-[200px] sm:max-w-xs md:max-w-md">
             {question.title}
           </span>
+
+          {activeArenaRoomCode && (
+            <div className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-bold font-mono shadow-xs">
+              <span className="h-1.5 w-1.5 rounded-full bg-rose-500 animate-pulse" />
+              <span>Arena Room: {activeArenaRoomCode}</span>
+            </div>
+          )}
         </div>
 
         {/* Center Live Metrics */}
@@ -1181,6 +1198,15 @@ export default function QuestionPage() {
         language={language}
         getCode={() => code}
       />
+
+      {/* Arena Battle Live Chat when in Arena mode */}
+      {activeArenaRoomCode && (
+        <ArenaLiveChat
+          roomCode={activeArenaRoomCode}
+          mode="floating"
+          defaultOpen={false}
+        />
+      )}
     </div>
   );
 }
