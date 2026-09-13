@@ -78,7 +78,7 @@ const rawWorlds: World[] = [
     unlocked: true,
     current: false,
     difficulty: "Medium",
-    problemCount: 15,
+    problemCount: 30,
     route: "/stack",
   },
   {
@@ -88,7 +88,7 @@ const rawWorlds: World[] = [
     unlocked: true,
     current: false,
     difficulty: "Medium",
-    problemCount: 14,
+    problemCount: 20,
     route: "/queue",
   },
   {
@@ -272,7 +272,7 @@ function DSAHome() {
                     <span className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1 rounded-full text-xs font-bold">
                       <CheckCircle2 size={13} className="text-emerald-600" />
                       <span>
-                        {progress.solved}/{progress.totalQuestions || 189} Solved ({progress.overall}%)
+                        {progress.solved}/{progress.totalQuestions || 210} Solved ({progress.overall}%)
                       </span>
                     </span>
 

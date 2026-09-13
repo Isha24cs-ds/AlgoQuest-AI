@@ -9,8 +9,8 @@ export const TOPICS_CONFIG = {
   "Arrays": { name: "Arrays", total: 25, keys: ["array", "prefix sum", "two pointer", "sliding window", "kadane"] },
   "Strings": { name: "Strings", total: 20, keys: ["string", "palindrome", "anagram"] },
   "Linked List": { name: "Linked Lists", total: 18, keys: ["link", "linked list", "linkedlist"] },
-  "Stack": { name: "Stacks", total: 15, keys: ["stack", "monotonic stack"] },
-  "Queue": { name: "Queues", total: 14, keys: ["queue", "deque", "buffer"] },
+  "Stack": { name: "Stacks", total: 30, keys: ["stack", "monotonic stack"] },
+  "Queue": { name: "Queues", total: 20, keys: ["queue", "deque", "buffer"] },
   "Trees": { name: "Trees", total: 30, keys: ["tree", "bst", "trie", "heap"] },
   "Graphs": { name: "Graphs", total: 28, keys: ["graph", "dfs", "bfs", "dijkstra"] },
 };
@@ -19,11 +19,26 @@ export function normalizeTopic(rawTopic) {
   if (!rawTopic) return "Arrays";
   const str = String(rawTopic).toLowerCase().trim();
 
-  for (const [canonical, config] of Object.entries(TOPICS_CONFIG)) {
-    if (config.keys.some((k) => str.includes(k))) {
-      return canonical;
-    }
-  }
+  // Direct exact or prefix checks
+  if (str === "stack" || str === "stacks" || str.startsWith("stack")) return "Stack";
+  if (str === "queue" || str === "queues" || str.startsWith("queue")) return "Queue";
+  if (str === "linked list" || str === "linked lists" || str === "linkedlist" || str.startsWith("linked") || str.startsWith("link")) return "Linked List";
+  if (str === "tree" || str === "trees" || str.startsWith("tree") || str.startsWith("bst")) return "Trees";
+  if (str === "graph" || str === "graphs" || str.startsWith("graph")) return "Graphs";
+  if (str === "string" || str === "strings" || str.startsWith("string")) return "Strings";
+  if (str === "variable" || str === "variables" || str.startsWith("var") || str.startsWith("fund") || str.startsWith("prog") || str.startsWith("math")) return "Variables";
+  if (str === "array" || str === "arrays" || str.startsWith("array")) return "Arrays";
+
+  // Substring checks in specific priority order
+  if (str.includes("stack")) return "Stack";
+  if (str.includes("queue") || str.includes("deque") || str.includes("buffer")) return "Queue";
+  if (str.includes("link")) return "Linked List";
+  if (str.includes("tree") || str.includes("bst") || str.includes("trie") || str.includes("heap")) return "Trees";
+  if (str.includes("graph") || str.includes("dijkstra")) return "Graphs";
+  if (str.includes("string") || str.includes("palindrome") || str.includes("anagram")) return "Strings";
+  if (str.includes("math") || str.includes("fundamental") || str.includes("variable")) return "Variables";
+  if (str.includes("array") || str.includes("prefix sum") || str.includes("two pointer") || str.includes("sliding window") || str.includes("kadane")) return "Arrays";
+
   return "Arrays";
 }
 

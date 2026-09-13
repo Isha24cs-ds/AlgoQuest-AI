@@ -1,5 +1,6 @@
 import { createSubmission, countQuestionSubmissions, getUserSubmissions } from "./submission.repository.js";
 import prisma from "../../../config/prisma.js";
+import { normalizeTopic } from "../../progress/progress.service.js";
 
 export async function submitSolution({
   userId,
@@ -19,26 +20,26 @@ export async function submitSolution({
 }) {
   let targetQuestion = null;
 
-  if (questionId && !isNaN(Number(questionId))) {
+  // 1. Look up by slug FIRST if provided (slug is globally unique)
+  if (slug) {
+    targetQuestion = await prisma.question.findUnique({
+      where: { slug: String(slug) },
+    });
+  } else if (questionId && !isNaN(Number(questionId))) {
+    // 2. Only look up by numeric id if NO slug was provided
     targetQuestion = await prisma.question.findUnique({
       where: { id: Number(questionId) },
     });
   }
 
-  if (!targetQuestion && slug) {
-    targetQuestion = await prisma.question.findUnique({
-      where: { slug: String(slug) },
-    });
-  }
+  const safeTopic = normalizeTopic(topic || targetQuestion?.topic || "Stack");
+  const safeDiff = ["Easy", "Medium", "Hard"].includes(difficulty) ? difficulty : (targetQuestion?.difficulty || "Easy");
+  const safeSlug = slug || (targetQuestion ? targetQuestion.slug : `question-${questionId || Date.now()}`);
+  const safeTitle = title || targetQuestion?.title || `Practice Problem ${questionId || 1}`;
 
-  // If question is not in Prisma Question table (e.g. from local practice datasets),
+  // 3. If question is not in Prisma Question table (e.g. from local practice datasets),
   // upsert it automatically so it has a valid database record and topic relation.
   if (!targetQuestion) {
-    const safeSlug = slug || `question-${questionId || Date.now()}`;
-    const safeTitle = title || `Practice Problem ${questionId || 1}`;
-    const safeTopic = topic || "Arrays";
-    const safeDiff = ["Easy", "Medium", "Hard"].includes(difficulty) ? difficulty : "Easy";
-
     targetQuestion = await prisma.question.upsert({
       where: { slug: safeSlug },
       update: {
@@ -67,6 +68,8 @@ export async function submitSolution({
   const previousAttempts = await countQuestionSubmissions(userId, actualQuestionId);
   const attemptsCount = previousAttempts + 1;
 
+  const canonicalTopic = normalizeTopic(targetQuestion.topic || safeTopic);
+
   const submission = await createSubmission({
     userId: Number(userId),
     questionId: actualQuestionId,
@@ -75,7 +78,7 @@ export async function submitSolution({
     status,
     runtime: runtime ? parseFloat(runtime) : null,
     memory: memory ? parseFloat(memory) : null,
-    topic: targetQuestion.topic || topic || "Arrays",
+    topic: canonicalTopic,
     pattern: targetQuestion.pattern || pattern || "General",
     difficulty: targetQuestion.difficulty || difficulty || "Easy",
     attemptsCount,
