@@ -21,30 +21,48 @@ export async function executeCode({
   language,
   stdin = "",
 }) {
+  const clientId = process.env.JDOODLE_CLIENT_ID;
+  const clientSecret = process.env.JDOODLE_CLIENT_SECRET;
+
+  if (!clientId || !clientSecret) {
+    throw new Error(
+      "JDoodle Compiler credentials (JDOODLE_CLIENT_ID / JDOODLE_CLIENT_SECRET) are missing in backend/.env. Please configure them and restart the backend server."
+    );
+  }
+
   const normLang = (language || "").toLowerCase().trim();
   const config = LANGUAGE_CONFIGS[normLang] || {
     language: normLang || "cpp17",
     versionIndex: "0",
   };
 
-  const response = await axios.post(
-    JDOODLE_URL,
-    {
-      clientId: process.env.JDOODLE_CLIENT_ID,
-      clientSecret: process.env.JDOODLE_CLIENT_SECRET,
-      script: code,
-      stdin: stdin || "",
-      language: config.language,
-      versionIndex: config.versionIndex,
-      compileOnly: false,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
+  try {
+    const response = await axios.post(
+      JDOODLE_URL,
+      {
+        clientId,
+        clientSecret,
+        script: code,
+        stdin: stdin || "",
+        language: config.language,
+        versionIndex: config.versionIndex,
+        compileOnly: false,
       },
-      timeout: 15000,
-    }
-  );
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+        timeout: 15000,
+      }
+    );
 
-  return response.data;
+    return response.data;
+  } catch (error) {
+    if (error.response?.status === 401 || error.response?.data?.error === "Unauthorized access") {
+      throw new Error(
+        "JDoodle Compiler API: Unauthorized access. Please verify your JDOODLE_CLIENT_ID and JDOODLE_CLIENT_SECRET in backend/.env, or check your daily JDoodle credit limits."
+      );
+    }
+    throw error;
+  }
 }
