@@ -36,7 +36,7 @@ export default function StackTrack() {
       title: "Interactive Quiz",
       subtitle: "Test push, pop, min-stack & bracket matching rules",
       icon: Brain,
-      route: "/quiz",
+      route: "/stack-quiz",
       color: "bg-blue-50 text-blue-600 border-blue-200",
     },
     {

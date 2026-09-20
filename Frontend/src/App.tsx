@@ -35,11 +35,13 @@ import StackTrack from "./pages/DSA/StackTrack";
 import LearnStack from "./pages/DSA/LearnStack";
 import StackLesson from "./pages/DSA/StackLesson";
 import StackPracticePage from "./pages/DSA/StackPracticePage";
+import StackQuiz from "./pages/DSA/StackQuiz";
 // Queue Pages
 import QueueTrack from "./pages/DSA/QueueTrack";
 import LearnQueue from "./pages/DSA/LearnQueue";
 import QueueLesson from "./pages/DSA/QueueLesson";
 import QueuePracticePage from "./pages/DSA/QueuePracticePage";
+import QueueQuiz from "./pages/DSA/QueueQuiz";
 
 import AuthPage from "./pages/AuthPage";
 import { AuthProvider } from "./context/AuthContext";
@@ -103,12 +105,14 @@ export default function App() {
         <Route path="/learn-stack" element={<LearnStack />} />
         <Route path="/learn-stack/:id" element={<StackLesson />} />
         <Route path="/stack-practice" element={<ProtectedRoute><StackPracticePage /></ProtectedRoute>} />
+        <Route path="/stack-quiz" element={<StackQuiz />} />
 
         {/* ===================== QUEUE ===================== */}
         <Route path="/queue" element={<QueueTrack />} />
         <Route path="/learn-queue" element={<LearnQueue />} />
         <Route path="/learn-queue/:id" element={<QueueLesson />} />
         <Route path="/queue-practice" element={<ProtectedRoute><QueuePracticePage /></ProtectedRoute>} />
+        <Route path="/queue-quiz" element={<QueueQuiz />} />
       </Routes>
     </AuthProvider>
   );

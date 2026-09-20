@@ -1,5 +1,6 @@
 import { getUserSubmissionsWithQuestions, getAllAvailableQuestions } from "./adaptive.repository.js";
 import { normalizeTopic } from "../progress/progress.service.js";
+import { getMLRecommendation } from "./ml.client.js";
 
 export const DEFAULT_TOPICS = [
   "Variables",
@@ -306,15 +307,14 @@ export async function identifyWeakAreas(userId) {
 }
 
 /**
- * Fetch the best next recommended question matching real telemetry
+ * Fetch the best next recommended question using Python ML microservice with rule-based fallback
  */
 export async function getNextRecommendedQuestion(userId) {
-  const weakArea = await identifyWeakAreas(userId);
   const allQuestions = await getAllAvailableQuestions();
   const userSubmissions = await getUserSubmissionsWithQuestions(userId);
 
   const solvedQuestionIds = new Set(
-    userSubmissions
+    (userSubmissions || [])
       .filter((s) => s.status === "ACCEPTED")
       .map((s) => s.questionId)
   );
@@ -326,11 +326,90 @@ export async function getNextRecommendedQuestion(userId) {
     inferredPattern: inferPattern(q),
   }));
 
+  // 1. Attempt Machine Learning recommendation
+  const mlRecommendation = await getMLRecommendation(userSubmissions);
+
+  if (mlRecommendation && mlRecommendation.topic && mlRecommendation.pattern) {
+    const targetTopic = normalizeTopic(mlRecommendation.topic);
+    const targetPattern = mlRecommendation.pattern;
+    const targetDiff = mlRecommendation.difficulty || "Easy";
+
+    // Progressive relaxation search for unsolved question matching ML target
+    let candidate = normalizedQuestions.find(
+      (q) =>
+        !solvedQuestionIds.has(q.id) &&
+        q.canonicalTopic === targetTopic &&
+        q.inferredPattern === targetPattern &&
+        q.difficulty === targetDiff
+    );
+
+    if (!candidate) {
+      candidate = normalizedQuestions.find(
+        (q) =>
+          !solvedQuestionIds.has(q.id) &&
+          q.canonicalTopic === targetTopic &&
+          q.inferredPattern === targetPattern
+      );
+    }
+
+    if (!candidate) {
+      candidate = normalizedQuestions.find(
+        (q) =>
+          !solvedQuestionIds.has(q.id) &&
+          q.canonicalTopic === targetTopic &&
+          q.difficulty === targetDiff
+      );
+    }
+
+    if (!candidate) {
+      candidate = normalizedQuestions.find(
+        (q) => !solvedQuestionIds.has(q.id) && q.canonicalTopic === targetTopic
+      );
+    }
+
+    if (!candidate) {
+      candidate = normalizedQuestions.find(
+        (q) => !solvedQuestionIds.has(q.id) && q.difficulty === targetDiff
+      );
+    }
+
+    if (!candidate) {
+      candidate = normalizedQuestions.find((q) => !solvedQuestionIds.has(q.id));
+    }
+
+    if (candidate) {
+      console.log(`[Adaptive] ML recommendation used (Topic: ${targetTopic}, Pattern: ${targetPattern}, Difficulty: ${targetDiff})`);
+
+      const finalTopic = candidate.canonicalTopic || candidate.topic || targetTopic;
+      const finalPattern = candidate.inferredPattern || candidate.pattern || targetPattern;
+      const finalDiff = candidate.difficulty || targetDiff;
+
+      return {
+        success: true,
+        recommendation: {
+          topic: finalTopic,
+          pattern: finalPattern,
+          difficulty: finalDiff,
+          reason: mlRecommendation.reason,
+        },
+        question: {
+          id: candidate.id,
+          title: candidate.title,
+          slug: candidate.slug,
+          statement: candidate.statement,
+        },
+      };
+    }
+  }
+
+  // 2. Rule-Based Fallback Engine
+  console.log("[Adaptive] Rule-based fallback used");
+  const weakArea = await identifyWeakAreas(userId);
+
   const targetTopic = weakArea.weakestTopic;
   const targetPattern = weakArea.weakestPattern;
   const targetDiff = weakArea.targetDifficulty || "Easy";
 
-  // 1. Unsolved question matching topic + pattern + difficulty
   let candidate = normalizedQuestions.find(
     (q) =>
       !solvedQuestionIds.has(q.id) &&
@@ -339,7 +418,6 @@ export async function getNextRecommendedQuestion(userId) {
       q.difficulty === targetDiff
   );
 
-  // 2. Unsolved question matching topic + pattern
   if (!candidate) {
     candidate = normalizedQuestions.find(
       (q) =>
@@ -349,7 +427,6 @@ export async function getNextRecommendedQuestion(userId) {
     );
   }
 
-  // 3. Unsolved question matching topic + difficulty
   if (!candidate) {
     candidate = normalizedQuestions.find(
       (q) =>
@@ -359,26 +436,22 @@ export async function getNextRecommendedQuestion(userId) {
     );
   }
 
-  // 4. Any unsolved question in topic
   if (!candidate) {
     candidate = normalizedQuestions.find(
       (q) => !solvedQuestionIds.has(q.id) && q.canonicalTopic === targetTopic
     );
   }
 
-  // 5. Any unsolved question matching target difficulty
   if (!candidate) {
     candidate = normalizedQuestions.find(
       (q) => !solvedQuestionIds.has(q.id) && q.difficulty === targetDiff
     );
   }
 
-  // 6. Any unsolved question across all
   if (!candidate) {
     candidate = normalizedQuestions.find((q) => !solvedQuestionIds.has(q.id));
   }
 
-  // 7. Fallback to first available question if all are solved
   if (!candidate) {
     candidate = normalizedQuestions[0] || {
       id: 1,

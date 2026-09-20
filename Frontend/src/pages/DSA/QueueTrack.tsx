@@ -36,7 +36,7 @@ export default function QueueTrack() {
       title: "Interactive Quiz",
       subtitle: "Test enqueue, dequeue, circular index & BFS queue logic",
       icon: Brain,
-      route: "/quiz",
+      route: "/queue-quiz",
       color: "bg-purple-50 text-purple-600 border-purple-200",
     },
     {
