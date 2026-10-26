@@ -55,7 +55,12 @@ export default function AuthPage() {
         body: JSON.stringify(payload),
       });
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch {
+        throw new Error(`Server returned ${response.status}: ${response.statusText || "Unexpected response"}`);
+      }
 
       if (!response.ok || !data.success) {
         throw new Error(data.message || "Authentication failed");
@@ -70,7 +75,11 @@ export default function AuthPage() {
         navigate("/journey");
       }, 1000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong.");
+      if (err instanceof TypeError && err.message.toLowerCase().includes("fetch")) {
+        setError("Cannot connect to server. Please verify the backend server is running on http://localhost:5000.");
+      } else {
+        setError(err instanceof Error ? err.message : "Something went wrong.");
+      }
     } finally {
       setLoading(false);
     }

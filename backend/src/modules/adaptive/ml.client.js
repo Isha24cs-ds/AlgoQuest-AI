@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const ML_SERVICE_URL = process.env.ML_SERVICE_URL || "http://localhost:8000";
-const ML_TIMEOUT_MS = 3000;
+const ML_TIMEOUT_MS = 10000;
 
 /**
  * Sends student submission telemetry to the Python FastAPI ML microservice.

@@ -20,9 +20,19 @@ export async function signup(req, res) {
       token,
     });
   } catch (err) {
-    res.status(400).json({
+    const isClientError =
+      err.message.includes("already exists") ||
+      err.message.includes("required");
+    const isDbError =
+      err.message.includes("prisma") ||
+      err.message.includes("tenant") ||
+      err.message.includes("database");
+
+    res.status(isClientError ? 400 : isDbError ? 503 : 500).json({
       success: false,
-      message: err.message,
+      message: isDbError
+        ? "Database connection failed. Please ensure your database is active and reachable."
+        : err.message,
     });
   }
 }
@@ -47,9 +57,19 @@ export async function login(req, res) {
       token,
     });
   } catch (err) {
-    res.status(401).json({
+    const isAuthError =
+      err.message.includes("Invalid email or password") ||
+      err.message.includes("No account found");
+    const isDbError =
+      err.message.includes("prisma") ||
+      err.message.includes("tenant") ||
+      err.message.includes("database");
+
+    res.status(isAuthError ? 401 : isDbError ? 503 : 500).json({
       success: false,
-      message: err.message,
+      message: isDbError
+        ? "Database connection failed. Please ensure your database is active and reachable."
+        : err.message,
     });
   }
 }
