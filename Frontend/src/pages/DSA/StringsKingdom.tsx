@@ -2,8 +2,6 @@ import {
   BookOpen,
   Sword,
   Brain,
-  Shield,
-  Crown,
   Coins,
   Sparkles,
   Award,
@@ -37,20 +35,6 @@ export default function StringsKingdom() {
       icon: Brain,
       color: "bg-purple-50 text-purple-600 border-purple-200",
       route: "/strings-quiz",
-    },
-    {
-      title: "Mini Boss Challenge",
-      description: "Anagrams & Palindrome substring algorithms",
-      icon: Shield,
-      color: "bg-amber-50 text-amber-600 border-amber-200",
-      route: "/strings-mini-boss",
-    },
-    {
-      title: "Final Boss Assessment",
-      description: "Advanced KMP & Trie string matching",
-      icon: Crown,
-      color: "bg-rose-50 text-rose-600 border-rose-200",
-      route: "/strings-final-boss",
     },
   ];
 

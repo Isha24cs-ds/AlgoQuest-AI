@@ -3,8 +3,6 @@ import {
   BookOpen,
   PlayCircle,
   Brain,
-  Swords,
-  Crown,
   Coins,
   Heart,
   Award,
@@ -38,20 +36,6 @@ export default function QueueTrack() {
       icon: Brain,
       route: "/queue-quiz",
       color: "bg-purple-50 text-purple-600 border-purple-200",
-    },
-    {
-      title: "Mini Boss Challenge",
-      subtitle: "Sliding window max & monotonic deque problems",
-      icon: Swords,
-      route: "/miniboss",
-      color: "bg-blue-50 text-blue-600 border-blue-200",
-    },
-    {
-      title: "Final Boss Assessment",
-      subtitle: "Priority queue & CPU task scheduler problem set",
-      icon: Crown,
-      route: "/finalboss",
-      color: "bg-rose-50 text-rose-600 border-rose-200",
     },
   ];
 
@@ -97,7 +81,7 @@ export default function QueueTrack() {
               <div className="leetcode-card px-4 py-2.5 rounded-lg flex items-center gap-2">
                 <Award className="text-amber-600" size={18} />
                 <div className="text-left">
-                  <span className="block text-xs font-bold text-slate-900">0 / 5</span>
+                  <span className="block text-xs font-bold text-slate-900">0 / 3</span>
                   <span className="block text-[10px] text-slate-400 font-semibold">Modules Solved</span>
                 </div>
               </div>

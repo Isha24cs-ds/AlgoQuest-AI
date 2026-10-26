@@ -47,10 +47,12 @@ import AuthPage from "./pages/AuthPage";
 import { AuthProvider } from "./context/AuthContext";
 import AuthModal from "./components/auth/AuthModal";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 export default function App() {
   return (
     <AuthProvider>
+      <ScrollToTop />
       <AuthModal />
       <Routes>
         {/* Landing */}

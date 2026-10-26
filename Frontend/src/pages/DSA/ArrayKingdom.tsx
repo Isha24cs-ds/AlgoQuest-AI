@@ -2,8 +2,6 @@ import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
   Brain,
-  Swords,
-  Crown,
   PlayCircle,
   Coins,
   Heart,
@@ -38,20 +36,6 @@ function ArraysKingdom() {
       icon: Brain,
       route: "/quiz",
       color: "bg-purple-50 text-purple-600 border-purple-200",
-    },
-    {
-      title: "Mini Boss Challenge",
-      subtitle: "Two pointer & Sliding window problems",
-      icon: Swords,
-      route: "/miniboss",
-      color: "bg-amber-50 text-amber-600 border-amber-200",
-    },
-    {
-      title: "Final Boss Assessment",
-      subtitle: "Interview simulation problem set",
-      icon: Crown,
-      route: "/finalboss",
-      color: "bg-rose-50 text-rose-600 border-rose-200",
     },
   ];
 
@@ -97,7 +81,7 @@ function ArraysKingdom() {
               <div className="leetcode-card px-4 py-2.5 rounded-lg flex items-center gap-2">
                 <Award className="text-blue-600" size={18} />
                 <div className="text-left">
-                  <span className="block text-xs font-bold text-slate-900">2 / 5</span>
+                  <span className="block text-xs font-bold text-slate-900">2 / 3</span>
                   <span className="block text-[10px] text-slate-400 font-semibold">Modules Solved</span>
                 </div>
               </div>
