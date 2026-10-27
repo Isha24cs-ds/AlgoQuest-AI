@@ -15,7 +15,7 @@ export async function askOpenRouter(messages) {
       headers: {
         Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
         "Content-Type": "application/json",
-        "HTTP-Referer": "http://localhost:5173",
+        "HTTP-Referer": "https://algoquest-backend-iakp.onrender.com",
         "X-Title": "AlgoQuest AI"
       }
     }

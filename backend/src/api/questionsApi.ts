@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:5000/api/v1";
+const BASE_URL = "https://algoquest-backend-iakp.onrender.com/api/v1";
 
 export async function getQuestions() {
   const response = await fetch(`${BASE_URL}/questions`);

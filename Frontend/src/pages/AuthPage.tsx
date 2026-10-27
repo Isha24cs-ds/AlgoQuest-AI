@@ -76,7 +76,7 @@ export default function AuthPage() {
       }, 1000);
     } catch (err) {
       if (err instanceof TypeError && err.message.toLowerCase().includes("fetch")) {
-        setError("Cannot connect to server. Please verify the backend server is running on http://localhost:5000.");
+        setError("Cannot connect to server. Please verify the backend server is running on https://algoquest-backend-iakp.onrender.com.");
       } else {
         setError(err instanceof Error ? err.message : "Something went wrong.");
       }
